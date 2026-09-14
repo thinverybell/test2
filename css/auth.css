@@ -428,3 +428,46 @@
 
 .auth-brand { display: none !important; }
 .auth-foot { display: none !important; }
+
+/* Login background fit — match full viewport cleanly */
+.auth-page {
+  background-color: #eaf4fc !important;
+  background-image: url('../assets/login-bg.png') !important;
+  background-repeat: no-repeat !important;
+  background-attachment: fixed !important;
+  background-size: cover !important;
+  background-position: center center !important;
+  min-height: 100vh !important;
+  min-height: 100dvh !important;
+}
+
+/* On wide screens keep important sides (books left / robot right) visible */
+@media (min-width: 1200px) {
+  .auth-page {
+    background-size: cover !important;
+    background-position: center 40% !important;
+  }
+}
+
+/* Tall / narrow: bias slightly lower so books + robot stay in frame */
+@media (max-width: 900px) {
+  .auth-page {
+    background-size: cover !important;
+    background-position: center 55% !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .auth-page {
+    background-size: cover !important;
+    background-position: center bottom !important;
+  }
+}
+
+/* Card stays centered over the empty middle of the art */
+.auth-wrap {
+  width: min(420px, 92vw) !important;
+  margin: 0 auto !important;
+  position: relative;
+  z-index: 2;
+}
