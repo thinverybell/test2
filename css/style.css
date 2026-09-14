@@ -2350,3 +2350,123 @@ body:before { display: none !important; }
   --purple: #1a4f8c;
   --line2: #163a66;
 }
+
+/* ============================================================
+   V21 — Fix white text on light background (contrast)
+   ============================================================ */
+
+body, .content, .shell, main {
+  color: #12263a !important;
+}
+
+/* Force dark text on all common elements */
+h1, h2, h3, h4, h5, h6,
+p, span, b, strong, small, label, a, li, td, th, div {
+  /* don't blanket everything — target known light-bg areas */
+}
+
+.topbar, .topbar a, .topnav a, .brand-word, .settings-label {
+  color: #12263a !important;
+}
+.topnav a { color: #1e3a5f !important; }
+.topnav a.active, .topnav a:hover { color: #0f2d52 !important; }
+
+.side-item, .side-item span, .side-item .chev {
+  color: #1e3a5f !important;
+}
+.side-item.active, .side-item.active span,
+.side-item:hover, .side-item:hover span {
+  color: #0f2d52 !important;
+}
+.side-quote, .side-quote small {
+  color: #1e3a5f !important;
+}
+.side-quote small { color: #163a66 !important; }
+
+/* Hero */
+.hero, .hero-copy, .hero-role, .hero-name {
+  color: #12263a !important;
+}
+.script, .hero-name .script {
+  color: #0f2d52 !important;
+}
+.hero-copy p {
+  color: #5c738a !important;
+}
+.clock-card, .clock-card .time, .clock-card .date,
+.clock-label, .weather, .weather strong, .visit-counter, .visit-counter b {
+  color: #12263a !important;
+}
+.clock-label, .weather small, .visit-counter {
+  color: #5c738a !important;
+}
+.clock-card .time, .visit-counter b {
+  color: #0f2d52 !important;
+}
+.hero-stats, .hero-stats strong, .hero-stats span {
+  color: #12263a !important;
+}
+.hero-stats span { color: #5c738a !important; }
+.hero-stats strong { color: #0f2d52 !important; }
+
+/* Sections */
+.music-home, .music-home b, .music-home small,
+.insight-card, .insight-card h2, .insight-card p,
+.live-stats, .live-stats b, .live-stats span,
+.latest, .history-section, .intro, .section,
+.section-head h2, .section-head p,
+.resource-card, .resource-card b, .resource-card p, .resource-card small,
+.cat-card, .cat-card b, .cat-card small,
+.intro-copy, .intro-copy h2, .intro-copy p {
+  color: #12263a !important;
+}
+.insight-card p, .section-head p, .resource-card p,
+.intro-copy p, .music-home small, .resource-card small, .cat-card small {
+  color: #5c738a !important;
+}
+.insight-card h2, .section-head h2, .intro-copy h2,
+.live-stats b, .resource-card b, .cat-card b, .music-home b {
+  color: #0f2d52 !important;
+}
+.insight-kicker { color: #163a66 !important; }
+.signature { color: #163a66 !important; }
+
+/* Buttons that should keep white text on navy */
+.small-btn.primary, .primary-btn, .fab-btn.primary,
+.auth-submit, .t-btn.primary,
+.small-btn.primary *, .primary-btn * {
+  color: #ffffff !important;
+}
+
+/* Secondary buttons dark text */
+.small-btn:not(.primary), .secondary-btn, .fab-btn:not(.primary) {
+  color: #12263a !important;
+}
+
+/* Footer */
+.footer, .footer a, .footer small, .footer-nav a, .footer-brand p {
+  color: #5c738a !important;
+}
+.footer-brand .script { color: #0f2d52 !important; }
+
+/* Tags & links */
+.tag, .filter-btn, .insight-links a, .section-link {
+  color: #1e3a5f !important;
+}
+.empty-state { color: #5c738a !important; }
+
+/* Session pill */
+.session-pill { color: #0f2d52 !important; }
+.session-pill a, .session-pill button { color: #163a66 !important; }
+
+/* Search / modal if any light */
+.search-box, .admin-box, .modal-heading b {
+  color: #12263a !important;
+}
+.modal-heading small { color: #5c738a !important; }
+
+/* Announcement */
+.announcement-bar { color: #12263a !important; }
+
+/* Fav / like */
+.fav-btn, .like-btn { color: #5c738a !important; }
