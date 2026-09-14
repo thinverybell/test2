@@ -1425,3 +1425,220 @@ html, body {
   }
   .shell { width: calc(100vw - 28px) !important; }
 }
+
+/* ============================================================
+   V16 — Topnav overflow fix + glow hover + visible animations
+   ============================================================ */
+
+/* ---- Topbar: never cut mid-item ---- */
+.topbar {
+  overflow: visible !important;
+  gap: 10px !important;
+}
+.topnav {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+  gap: 2px !important;
+  mask-image: linear-gradient(90deg, #000 0%, #000 calc(100% - 28px), transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, #000 0%, #000 calc(100% - 28px), transparent 100%);
+}
+.topnav::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; }
+.topnav a {
+  flex: 0 0 auto !important;
+  white-space: nowrap !important;
+  padding: 8px 9px !important;
+  font-size: 12px !important;
+  border-radius: 10px !important;
+  transition: transform .2s ease, background .2s ease, border-color .2s ease, box-shadow .2s ease !important;
+}
+/* Hide lower-priority topnav items on narrower widths so nothing is half-cut */
+@media (max-width: 1400px) {
+  .topnav a[href="my-library.html"],
+  .topnav a[href="resources.html"] { display: none !important; }
+}
+@media (max-width: 1200px) {
+  .topnav a[href="guide.html"],
+  .topnav a[href="tools.html"],
+  .topnav a[data-open-ticket-nav] { display: none !important; }
+}
+@media (max-width: 1050px) {
+  .topnav a[href="mods.html"],
+  .topnav a[href="config.html"] { display: none !important; }
+}
+
+/* Topnav hover / active glow */
+.topnav a:hover {
+  transform: translateY(-1px) scale(1.04);
+  background: rgba(104, 67, 255, .18) !important;
+  border-color: rgba(140, 110, 255, .55) !important;
+  box-shadow: 0 0 16px rgba(100, 70, 255, .25), inset 0 0 12px rgba(100, 70, 255, .06) !important;
+  color: #fff !important;
+}
+.topnav a.active {
+  background: linear-gradient(180deg, rgba(104,67,255,.28), rgba(104,67,255,.10)) !important;
+  border-color: rgba(130, 100, 255, .65) !important;
+  box-shadow: 0 0 18px rgba(100, 70, 255, .3), inset 0 -2px 0 #7b5cff !important;
+}
+
+/* ---- Sidebar: light up like before + stronger hover ---- */
+.side-item {
+  border: 1px solid transparent !important;
+  transition: transform .2s ease, background .2s ease, border-color .2s ease, box-shadow .2s ease, color .2s ease !important;
+}
+.side-item:hover {
+  transform: translateX(4px) scale(1.02);
+  background: linear-gradient(90deg, rgba(90, 55, 255, .28), rgba(90, 55, 255, .06)) !important;
+  border-color: rgba(130, 100, 255, .55) !important;
+  box-shadow: 0 0 20px rgba(100, 70, 255, .18), inset 3px 0 0 #7b5cff !important;
+  color: #fff !important;
+}
+.side-item.active {
+  background: linear-gradient(90deg, rgba(90, 55, 255, .32), rgba(90, 55, 255, .08)) !important;
+  border-color: rgba(130, 100, 255, .6) !important;
+  box-shadow: inset 3px 0 0 #8b6cff, 0 0 18px rgba(100, 70, 255, .2) !important;
+  color: #fff !important;
+}
+.side-item:hover .side-icon,
+.side-item.active .side-icon {
+  filter: drop-shadow(0 0 6px rgba(140, 110, 255, .7));
+  transform: scale(1.12);
+  transition: transform .2s ease, filter .2s ease;
+}
+
+/* ---- Cards / buttons: scale + glow on hover ---- */
+.resource-card,
+.cat-card,
+.insight-card {
+  transition: transform .28s cubic-bezier(.22,.8,.28,1), box-shadow .28s ease, border-color .28s ease !important;
+}
+.resource-card:hover,
+.cat-card:hover {
+  transform: translateY(-6px) scale(1.02) !important;
+  border-color: rgba(130, 100, 255, .65) !important;
+  box-shadow: 0 16px 40px rgba(0,0,0,.3), 0 0 24px rgba(100, 70, 255, .2) !important;
+}
+.small-btn,
+.primary-btn,
+.secondary-btn,
+.fab-btn {
+  transition: transform .2s ease, box-shadow .2s ease, filter .2s ease !important;
+}
+.small-btn:hover,
+.primary-btn:hover,
+.fab-btn:hover {
+  transform: translateY(-2px) scale(1.04) !important;
+  box-shadow: 0 10px 28px rgba(100, 70, 255, .35), 0 0 16px rgba(120, 90, 255, .25) !important;
+  filter: brightness(1.08);
+}
+.avatar-ring:hover {
+  transform: scale(1.06) !important;
+  box-shadow: 0 0 0 4px rgba(100, 70, 255, .85), 0 0 0 8px rgba(5,12,19,.9), 0 0 40px rgba(100, 70, 255, .55) !important;
+}
+.icon-btn:hover,
+.mini-avatar:hover,
+.search-pill:hover {
+  transform: translateY(-2px) scale(1.06) !important;
+  border-color: rgba(130, 100, 255, .6) !important;
+  box-shadow: 0 0 16px rgba(100, 70, 255, .3) !important;
+}
+.clock-card {
+  transition: border-color .25s ease, box-shadow .25s ease !important;
+}
+.clock-card:hover {
+  border-color: rgba(130, 100, 255, .45) !important;
+  box-shadow: 0 12px 36px rgba(0,0,0,.25), 0 0 20px rgba(100, 70, 255, .12) !important;
+}
+
+/* ---- Visible page-load animations ---- */
+@keyframes v16FadeUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes v16FadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes v16ScaleIn {
+  from { opacity: 0; transform: scale(.94); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes v16SlideLeft {
+  from { opacity: 0; transform: translateX(-20px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.topbar {
+  animation: v16FadeIn .45s ease both !important;
+}
+.sidebar .side-item {
+  animation: v16SlideLeft .4s cubic-bezier(.22,.8,.28,1) both !important;
+}
+.sidebar .side-item:nth-child(1)  { animation-delay: .04s !important; }
+.sidebar .side-item:nth-child(2)  { animation-delay: .07s !important; }
+.sidebar .side-item:nth-child(3)  { animation-delay: .10s !important; }
+.sidebar .side-item:nth-child(4)  { animation-delay: .13s !important; }
+.sidebar .side-item:nth-child(5)  { animation-delay: .16s !important; }
+.sidebar .side-item:nth-child(6)  { animation-delay: .19s !important; }
+.sidebar .side-item:nth-child(7)  { animation-delay: .22s !important; }
+.sidebar .side-item:nth-child(8)  { animation-delay: .25s !important; }
+.sidebar .side-item:nth-child(9)  { animation-delay: .28s !important; }
+.sidebar .side-item:nth-child(10) { animation-delay: .31s !important; }
+.sidebar .side-item:nth-child(11) { animation-delay: .34s !important; }
+.side-quote {
+  animation: v16FadeUp .5s .4s cubic-bezier(.22,.8,.28,1) both !important;
+}
+
+.hero {
+  animation: v16ScaleIn .65s cubic-bezier(.22,.8,.28,1) both !important;
+}
+.hero-profile {
+  animation: v16FadeUp .55s .1s cubic-bezier(.22,.8,.28,1) both !important;
+}
+.clock-card {
+  animation: v16FadeUp .55s .2s cubic-bezier(.22,.8,.28,1) both !important;
+}
+.hero-stats {
+  animation: v16FadeUp .5s .3s cubic-bezier(.22,.8,.28,1) both !important;
+}
+
+.music-home {
+  animation: v16FadeUp .55s .15s cubic-bezier(.22,.8,.28,1) both !important;
+}
+.home-insights {
+  animation: v16FadeUp .55s .2s cubic-bezier(.22,.8,.28,1) both !important;
+}
+.latest {
+  animation: v16FadeUp .55s .25s cubic-bezier(.22,.8,.28,1) both !important;
+}
+.history-section {
+  animation: v16FadeUp .55s .3s cubic-bezier(.22,.8,.28,1) both !important;
+}
+.intro {
+  animation: v16FadeUp .55s .35s cubic-bezier(.22,.8,.28,1) both !important;
+}
+.section {
+  animation: v16FadeUp .55s .4s cubic-bezier(.22,.8,.28,1) both !important;
+}
+
+.resource-card,
+.cat-card {
+  animation: v16FadeUp .5s cubic-bezier(.22,.8,.28,1) both !important;
+}
+.resource-card:nth-child(1), .cat-card:nth-child(1) { animation-delay: .08s !important; }
+.resource-card:nth-child(2), .cat-card:nth-child(2) { animation-delay: .14s !important; }
+.resource-card:nth-child(3), .cat-card:nth-child(3) { animation-delay: .20s !important; }
+.resource-card:nth-child(4), .cat-card:nth-child(4) { animation-delay: .26s !important; }
+.resource-card:nth-child(5), .cat-card:nth-child(5) { animation-delay: .32s !important; }
+
+.fab-dock {
+  animation: v16FadeUp .5s .5s cubic-bezier(.22,.8,.28,1) both !important;
+}
+
+/* Ensure animations aren't killed by earlier opacity:1 rules on load only */
+.reveal-ready {
+  animation: none !important;
+}

@@ -204,3 +204,15 @@ function updateFakeStats(){const v=$('#liveVisits');if(v)v.textContent=bumpTotal
     } catch (_) {}
   });
 })();
+
+/* V16 — highlight active nav + soft page enter */
+(function(){
+  const path = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
+  document.querySelectorAll('.topnav a, .side-item').forEach(a => {
+    const href = (a.getAttribute('href') || '').toLowerCase();
+    if (!href || href === '#' || href.startsWith('#')) return;
+    if (href === path || (path === '' && href === 'index.html')) {
+      a.classList.add('active');
+    }
+  });
+})();
