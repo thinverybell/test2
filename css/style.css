@@ -2079,3 +2079,274 @@ aside.sidebar .side-inner,
   border-color: #c5d4e6 !important;
   color: #5a7390 !important;
 }
+
+/* ============================================================
+   V20 — Cohesive professional light theme
+   Clean white + navy, no leftover purple/dark patches
+   ============================================================ */
+
+:root {
+  --bg: #f5f7fa !important;
+  --ink: #12263a !important;
+  --muted: #5c738a !important;
+  --navy: #163a66 !important;
+  --navy2: #0f2d52 !important;
+  --line: #d5dee8 !important;
+  --card: #ffffff !important;
+  --soft: #eef3f8 !important;
+}
+
+body {
+  background: var(--bg) !important;
+  color: var(--ink) !important;
+}
+
+.page-bg {
+  background: #f5f7fa !important;
+  background-image: none !important;
+}
+.page-overlay {
+  background: none !important;
+  display: none !important;
+}
+body:before { display: none !important; }
+
+/* ---- Topbar: flat white, no weird brand box ---- */
+.topbar {
+  background: #ffffff !important;
+  border-bottom: 1px solid var(--line) !important;
+  box-shadow: 0 1px 0 rgba(18,38,58,.04) !important;
+  backdrop-filter: none !important;
+}
+.brand {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  width: auto !important;
+  padding: 0 !important;
+  gap: 8px !important;
+}
+.brand-word {
+  color: var(--navy2) !important;
+  font-size: 26px !important;
+}
+.brand-mark {
+  background: var(--navy) !important;
+  color: #fff !important;
+  transform: none !important;
+  border-radius: 8px !important;
+  width: 28px !important;
+  height: 28px !important;
+  font-size: 12px !important;
+}
+.topnav a {
+  color: var(--ink) !important;
+  background: transparent !important;
+  border: 1px solid transparent !important;
+}
+.topnav a:hover {
+  background: var(--soft) !important;
+  border-color: var(--line) !important;
+  color: var(--navy) !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+.topnav a.active {
+  background: var(--soft) !important;
+  border-color: var(--navy) !important;
+  color: var(--navy2) !important;
+  box-shadow: inset 0 -2px 0 var(--navy) !important;
+}
+.search-pill,
+.icon-btn,
+.mini-avatar,
+.session-pill {
+  background: var(--soft) !important;
+  border: 1px solid var(--line) !important;
+  color: var(--ink) !important;
+  box-shadow: none !important;
+}
+.session-pill { background: #e8eef5 !important; color: var(--navy2) !important; }
+.session-pill a, .session-pill button { color: var(--navy) !important; }
+.settings-label { color: var(--muted) !important; }
+
+/* ---- Sidebar: pure white card ---- */
+.sidebar { background: transparent !important; }
+.side-inner {
+  background: #fff !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 4px 18px rgba(18,38,58,.05) !important;
+}
+.side-item {
+  color: var(--ink) !important;
+  border: 1px solid transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+.side-item:hover {
+  background: var(--soft) !important;
+  border-color: var(--line) !important;
+  color: var(--navy2) !important;
+  box-shadow: none !important;
+  transform: translateX(2px) !important;
+}
+.side-item.active {
+  background: #e8eef5 !important;
+  border-color: #b8c9db !important;
+  color: var(--navy2) !important;
+  box-shadow: inset 3px 0 0 var(--navy) !important;
+}
+.side-quote {
+  background: var(--soft) !important;
+  border: 1px solid var(--line) !important;
+  color: var(--ink) !important;
+}
+.side-quote small { color: var(--navy) !important; }
+.side-quote:before { color: #b8c9db !important; }
+
+/* ---- Hero: light, consistent ---- */
+.hero {
+  background: #ffffff !important;
+  border: 1px solid var(--line) !important;
+  box-shadow: 0 6px 24px rgba(18,38,58,.06) !important;
+}
+.hero:before { color: rgba(22,58,102,.2) !important; }
+.hero-glow, .hero-art { display: none !important; }
+.hero:after { display: none !important; }
+
+.avatar-ring {
+  box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--navy), 0 8px 24px rgba(15,45,82,.15) !important;
+}
+.script { color: var(--navy2) !important; }
+.seal { background: var(--navy) !important; color: #fff !important; }
+.hero-role { color: var(--ink) !important; }
+.hero-copy p { color: var(--muted) !important; }
+.socials a { color: var(--navy) !important; }
+
+.clock-card {
+  background: var(--soft) !important;
+  border: 1px solid var(--line) !important;
+  box-shadow: none !important;
+  color: var(--ink) !important;
+}
+.clock-card .time { color: var(--navy2) !important; }
+.clock-label, .clock-card .date, .weather, .visit-counter { color: var(--muted) !important; }
+.status-dot { background: #2f9e6b !important; box-shadow: 0 0 8px #2f9e6b !important; }
+
+.hero-stats {
+  background: var(--soft) !important;
+  border: 1px solid var(--line) !important;
+  box-shadow: none !important;
+}
+.hero-stats > div {
+  border-right: 1px solid var(--line) !important;
+  background: transparent !important;
+}
+.hero-stats strong { color: var(--navy2) !important; }
+.hero-stats span { color: var(--muted) !important; }
+
+/* ---- Sections & cards ---- */
+.music-home,
+.insight-card,
+.live-stats,
+.live-stats > div,
+.latest, .history-section, .intro, .section,
+.resource-card, .cat-card {
+  background: #ffffff !important;
+  border: 1px solid var(--line) !important;
+  box-shadow: 0 4px 16px rgba(18,38,58,.04) !important;
+  color: var(--ink) !important;
+}
+.live-stats { background: transparent !important; gap: 10px !important; padding: 0 !important; border: none !important; box-shadow: none !important; }
+.live-stats > div {
+  border-radius: 12px !important;
+  background: #fff !important;
+}
+.insight-card:before { display: none !important; }
+.insight-kicker, .section-head h2 span { color: var(--navy) !important; }
+.insight-card h2, .section-head h2, .intro-copy h2 { color: var(--navy2) !important; }
+.insight-card p, .section-head p, .resource-card p, .intro-copy p {
+  color: var(--muted) !important;
+}
+.resource-card b, .cat-card b { color: var(--ink) !important; }
+.resource-card small, .cat-card small { color: var(--muted) !important; }
+
+.music-cover {
+  background: var(--navy) !important;
+  color: #fff !important;
+  box-shadow: none !important;
+}
+.music-controls button {
+  background: var(--soft) !important;
+  border-color: var(--line) !important;
+  color: var(--ink) !important;
+}
+
+.small-btn {
+  background: var(--soft) !important;
+  border-color: var(--line) !important;
+  color: var(--ink) !important;
+}
+.small-btn.primary,
+.primary-btn,
+.fab-btn.primary,
+.auth-submit {
+  background: var(--navy) !important;
+  background-image: none !important;
+  border-color: var(--navy) !important;
+  color: #fff !important;
+  box-shadow: 0 4px 14px rgba(15,45,82,.18) !important;
+}
+.small-btn.primary:hover,
+.primary-btn:hover,
+.fab-btn.primary:hover {
+  background: var(--navy2) !important;
+  filter: none !important;
+}
+
+.fab-btn {
+  background: #fff !important;
+  border: 1px solid var(--line) !important;
+  color: var(--ink) !important;
+  box-shadow: 0 6px 18px rgba(18,38,58,.1) !important;
+}
+.fab-dock-handle {
+  background: #fff !important;
+  border-color: var(--line) !important;
+  color: var(--muted) !important;
+}
+
+.cat-card.red, .cat-card.blue, .cat-card.cyan, .cat-card.gold, .cat-card.purple {
+  background: #fff !important;
+  border: 1px solid var(--line) !important;
+}
+.cat-icon {
+  background: var(--soft) !important;
+  border: 1px solid var(--line) !important;
+  color: var(--navy) !important;
+}
+
+.footer { color: var(--muted) !important; }
+.footer-brand .script { color: var(--navy2) !important; }
+.footer-nav a { color: var(--ink) !important; }
+
+/* Tags, filters */
+.tag, .filter-btn, .insight-links a, .section-link {
+  background: var(--soft) !important;
+  border-color: var(--line) !important;
+  color: var(--ink) !important;
+}
+.empty-state {
+  background: var(--soft) !important;
+  border-color: var(--line) !important;
+  color: var(--muted) !important;
+}
+
+/* Soften any remaining purple glow */
+* {
+  --red: #163a66;
+  --red2: #1a4f8c;
+  --purple: #1a4f8c;
+  --line2: #163a66;
+}
