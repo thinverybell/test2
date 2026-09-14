@@ -257,87 +257,88 @@ function updateFakeStats(){const v=$('#liveVisits');if(v)v.textContent=bumpTotal
 })();
 
 
-/* V23 — Topnav overflow "..." dropdown (fixed) */
-(function(){
-  function setupNavMore(){
-    const nav = document.querySelector('.topnav');
-    if (!nav) return;
-    if (nav.dataset.moreReady === '2') return;
-    nav.dataset.moreReady = '2';
 
-    // remove old wrap if any
-    nav.querySelectorAll('.nav-more-wrap').forEach(n => n.remove());
+
+
+/* V26 — Topnav "..." dropdown with inline styles (bulletproof) */
+(function () {
+  function init() {
+    const nav = document.querySelector('.topnav');
+    if (!nav || nav.dataset.moreReady === 'v26') return;
+    nav.dataset.moreReady = 'v26';
+    nav.querySelectorAll('.nav-more-wrap').forEach((n) => n.remove());
+    document.querySelectorAll('.nav-more-menu-portal').forEach((n) => n.remove());
 
     const links = [...nav.querySelectorAll(':scope > a')];
-    if (links.length < 3) return;
+    if (links.length <= 5) return;
+
+    const rest = links.slice(5);
+    rest.forEach((a) => a.classList.add('nav-overflow-hidden'));
 
     const wrap = document.createElement('div');
     wrap.className = 'nav-more-wrap';
-    wrap.innerHTML = '<button type="button" class="nav-more-btn" aria-expanded="false" title="Thêm mục">⋯</button><div class="nav-more-menu" role="menu"></div>';
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'nav-more-btn';
+    btn.title = 'Thêm mục';
+    btn.textContent = '⋯';
+    btn.setAttribute('aria-expanded', 'false');
+    wrap.appendChild(btn);
     nav.appendChild(wrap);
-    const btn = wrap.querySelector('.nav-more-btn');
-    const menu = wrap.querySelector('.nav-more-menu');
 
-    function measure(){
-      // show all first
-      links.forEach(a => a.classList.remove('nav-overflow-hidden'));
-      menu.innerHTML = '';
-      wrap.style.visibility = 'hidden';
-      wrap.style.display = 'block';
-
-      const actions = document.querySelector('.top-actions');
-      const actionsLeft = actions ? actions.getBoundingClientRect().left : (window.innerWidth - 8);
-      const moreW = 48;
-      const limitX = actionsLeft - moreW - 12;
-
-      // find first link that overflows past limit
-      let cut = links.length;
-      for (let i = 0; i < links.length; i++) {
-        const r = links[i].getBoundingClientRect();
-        if (r.right > limitX) {
-          cut = Math.max(i, 2); // keep at least 2
-          break;
-        }
-      }
-
-      const overflow = links.slice(cut);
-      if (overflow.length) {
-        wrap.style.visibility = 'visible';
-        wrap.style.display = '';
-        overflow.forEach(a => {
-          a.classList.add('nav-overflow-hidden');
-          const clone = a.cloneNode(true);
-          if (a.classList.contains('active')) clone.classList.add('active');
-          menu.appendChild(clone);
+    const menu = document.createElement('div');
+    menu.className = 'nav-more-menu-portal';
+    menu.setAttribute('role', 'menu');
+    menu.style.cssText = 'display:none;position:fixed;z-index:2147483646;min-width:210px;background:#fff;border:1px solid #c5d4e6;border-radius:12px;box-shadow:0 16px 48px rgba(15,39,68,.18);padding:8px;flex-direction:column;gap:2px;';
+    rest.forEach((a) => {
+      const item = document.createElement('a');
+      item.href = a.getAttribute('href') || '#';
+      item.textContent = (a.textContent || '').replace(/\s+/g, ' ').trim();
+      item.style.cssText = 'display:block;padding:11px 14px;border-radius:8px;color:#12263a;text-decoration:none;font:600 13px/1.3 Be Vietnam Pro,sans-serif;white-space:nowrap;';
+      item.addEventListener('mouseenter', () => { item.style.background = '#e8eef5'; });
+      item.addEventListener('mouseleave', () => { item.style.background = 'transparent'; });
+      if (a.hasAttribute('data-open-ticket-nav')) {
+        item.href = '#';
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          close();
+          const t = document.querySelector('a[data-open-ticket-nav],button[data-open-ticket-nav]');
+          if (t && t !== item) t.click();
         });
       } else {
-        wrap.style.display = 'none';
+        item.addEventListener('click', close);
       }
+      menu.appendChild(item);
+    });
+    document.body.appendChild(menu);
+
+    function open() {
+      const r = btn.getBoundingClientRect();
+      menu.style.display = 'flex';
+      menu.style.top = r.bottom + 8 + 'px';
+      menu.style.left = Math.min(window.innerWidth - 230, Math.max(8, r.left - 20)) + 'px';
+      btn.setAttribute('aria-expanded', 'true');
+      btn.classList.add('is-open');
+    }
+    function close() {
+      menu.style.display = 'none';
+      btn.setAttribute('aria-expanded', 'false');
+      btn.classList.remove('is-open');
     }
 
-    btn.addEventListener('click', e => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
       e.stopPropagation();
-      const open = menu.classList.toggle('open');
-      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      if (menu.style.display === 'none' || !menu.style.display) open();
+      else close();
     });
-    document.addEventListener('click', () => {
-      menu.classList.remove('open');
-      btn.setAttribute('aria-expanded', 'false');
+    document.addEventListener('click', (e) => {
+      if (e.target !== btn && !menu.contains(e.target)) close();
     });
-    menu.addEventListener('click', e => e.stopPropagation());
-
-    measure();
-    window.addEventListener('resize', () => {
-      clearTimeout(window._navMoreT);
-      window._navMoreT = setTimeout(measure, 100);
-    });
-    setTimeout(measure, 300);
-    setTimeout(measure, 1000);
+    window.addEventListener('resize', close);
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', setupNavMore);
-  } else {
-    setupNavMore();
-  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+  setTimeout(init, 500);
 })();

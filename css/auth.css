@@ -471,3 +471,52 @@
   position: relative;
   z-index: 2;
 }
+
+/* ============================================================
+   Login BG — exact full-viewport match
+   ============================================================ */
+.auth-page {
+  position: relative !important;
+  min-height: 100vh !important;
+  min-height: 100dvh !important;
+  margin: 0 !important;
+  overflow-x: hidden !important;
+  background: #e8f3fc !important;
+  background-image: none !important;
+  display: grid !important;
+  place-items: center !important;
+}
+
+.auth-bg-layer {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 0 !important;
+  pointer-events: none !important;
+  background-color: #e8f3fc !important;
+  background-image: url('../assets/login-bg.png') !important;
+  background-repeat: no-repeat !important;
+  /* stretch exactly to viewport so no crop mismatch */
+  background-size: 100% 100% !important;
+  background-position: center center !important;
+}
+
+.auth-wrap {
+  position: relative !important;
+  z-index: 2 !important;
+  width: min(420px, 92vw) !important;
+  margin: 0 !important;
+}
+
+@media (min-aspect-ratio: 16/9) {
+  .auth-bg-layer {
+    background-size: 100% 100% !important;
+  }
+}
+
+@media (max-aspect-ratio: 4/3) {
+  .auth-bg-layer {
+    /* on tall screens prefer cover to avoid extreme stretch */
+    background-size: cover !important;
+    background-position: center bottom !important;
+  }
+}
