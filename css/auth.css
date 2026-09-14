@@ -507,15 +507,19 @@
   image-rendering: auto !important;
 }
 
-/* Form card nằm đúng trong vùng trắng của frame */
+/* Form card — absolute inset đúng vùng trắng của frame (đỏ trong ảnh 2)
+   Frame 403×619: white ~ top 42%, left 15%, right 11%, bottom 10% */
 .auth-wrap.auth-frame .auth-card {
-  position: relative !important;
+  position: absolute !important;
   z-index: 1 !important;
-  width: 100% !important;
-  height: 100% !important;
+  top: 41.5% !important;
+  left: 14.5% !important;
+  right: 10.5% !important;
+  bottom: 10% !important;
+  width: auto !important;
+  height: auto !important;
   margin: 0 !important;
-  /* inset khớp vùng trắng: top 42%, left 14%, right 7%, bottom 10% */
-  padding: 42% 8% 11% 14% !important;
+  padding: 0 !important;
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;
@@ -526,9 +530,10 @@
   box-sizing: border-box !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
+  overflow: hidden !important;
 }
 
-/* Tabs + panels — nền trắng rõ, không blur */
+/* Tabs + panels — nền trắng rõ, không blur, fill hết vùng đỏ */
 .auth-wrap.auth-frame .auth-tabs {
   background: #fff !important;
   border-radius: 10px 10px 0 0 !important;
@@ -546,6 +551,11 @@
   flex: 1 1 auto !important;
   min-height: 0 !important;
   overflow: auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+.auth-wrap.auth-frame .auth-panel {
+  flex: 1 1 auto !important;
 }
 .auth-wrap.auth-frame .auth-tab {
   font-size: 11.5px !important;
@@ -566,7 +576,7 @@
 }
 .auth-wrap.auth-frame .auth-forgot {
   background: transparent !important;
-  margin-top: 6px !important;
+  margin-top: auto !important;
   font-size: 10.5px !important;
   padding: 8px 4px !important;
   border: none !important;
@@ -602,7 +612,7 @@
 }
 
 .auth-wrap.auth-frame .auth-admin-head {
-  padding: 6px 6px 0 !important;
+  padding: 8px 6px 0 !important;
   background: #fff !important;
   border-radius: 10px 10px 0 0 !important;
   border: 1px solid rgba(197, 212, 230, 0.85) !important;
@@ -620,7 +630,10 @@
     max-width: min(360px, 94vw, calc(90vh * 403 / 619)) !important;
   }
   .auth-wrap.auth-frame .auth-card {
-    padding: 41% 7% 10% 13% !important;
+    top: 41% !important;
+    left: 13.5% !important;
+    right: 9.5% !important;
+    bottom: 9.5% !important;
   }
   .auth-wrap.auth-frame .auth-tab {
     font-size: 10.5px !important;
