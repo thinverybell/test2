@@ -3007,3 +3007,91 @@ p, span, b, strong, small, label, a, li, td, th, div {
   background: #e8eef5 !important;
   color: #0f2d52 !important;
 }
+
+/* ============================================================
+   V27 — Pin floating dock to bottom-right (fix drift)
+   ============================================================ */
+.fab-dock {
+  position: fixed !important;
+  right: 20px !important;
+  bottom: 20px !important;
+  left: auto !important;
+  top: auto !important;
+  z-index: 1200 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-end !important;
+  gap: 8px !important;
+}
+
+/* When user has dragged, JS may set left/top — still clamp away from sidebar */
+.fab-dock.is-custom-pos {
+  right: auto !important;
+  bottom: auto !important;
+}
+
+/* Hide duplicate original floaters so only dock shows */
+body.has-fab-dock .donate-fab,
+body.has-fab-dock .ticket-launcher,
+body.has-fab-dock #ticketOpen,
+body.has-fab-dock .back-top {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.fab-dock-btns {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-end !important;
+  gap: 8px !important;
+}
+.fab-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  border-radius: 999px !important;
+  padding: 10px 14px !important;
+  border: 1px solid #c5d4e6 !important;
+  background: #fff !important;
+  color: #12263a !important;
+  box-shadow: 0 8px 24px rgba(18,38,58,.12) !important;
+  cursor: pointer !important;
+  font: 700 12px/1 'Be Vietnam Pro', sans-serif !important;
+}
+.fab-btn.primary {
+  background: #163a66 !important;
+  border-color: #163a66 !important;
+  color: #fff !important;
+}
+.fab-btn.mini {
+  width: 42px !important;
+  height: 42px !important;
+  padding: 0 !important;
+  justify-content: center !important;
+  border-radius: 50% !important;
+}
+.fab-count {
+  min-width: 20px !important;
+  height: 20px !important;
+  padding: 0 6px !important;
+  border-radius: 99px !important;
+  background: #fff !important;
+  color: #163a66 !important;
+  font-size: 10px !important;
+  display: grid !important;
+  place-items: center !important;
+}
+.fab-btn.primary .fab-count {
+  background: #fff !important;
+  color: #163a66 !important;
+}
+.fab-dock-handle {
+  width: 36px !important;
+  height: 14px !important;
+  border-radius: 8px !important;
+  background: #e8eef5 !important;
+  border: 1px solid #c5d4e6 !important;
+  cursor: grab !important;
+  margin-left: auto !important;
+}

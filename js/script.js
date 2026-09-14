@@ -161,16 +161,32 @@ function updateFakeStats(){const v=$('#liveVisits');if(v)v.textContent=bumpTotal
   let dragging = false, ox = 0, oy = 0;
   const posKey = 'giahuy-fab-dock-pos';
 
-  // Restore position
+  // Reset bad positions (e.g. drifted over sidebar). Only restore if in safe zone.
   try {
     const saved = JSON.parse(localStorage.getItem(posKey) || 'null');
-    if (saved && typeof saved.x === 'number' && typeof saved.y === 'number') {
+    const safe = saved
+      && typeof saved.x === 'number' && typeof saved.y === 'number'
+      && saved.x > 120
+      && saved.y > 80
+      && saved.x < window.innerWidth - 60
+      && saved.y < window.innerHeight - 60;
+    if (safe) {
+      dock.classList.add('is-custom-pos');
       dock.style.left = saved.x + 'px';
       dock.style.top = saved.y + 'px';
       dock.style.right = 'auto';
       dock.style.bottom = 'auto';
+    } else {
+      localStorage.removeItem(posKey);
+      dock.classList.remove('is-custom-pos');
+      dock.style.left = '';
+      dock.style.top = '';
+      dock.style.right = '';
+      dock.style.bottom = '';
     }
-  } catch (_) {}
+  } catch (_) {
+    localStorage.removeItem(posKey);
+  }
 
   const onMove = (clientX, clientY) => {
     if (!dragging) return;
@@ -197,6 +213,7 @@ function updateFakeStats(){const v=$('#liveVisits');if(v)v.textContent=bumpTotal
     dragging = false;
     dock.classList.remove('dragging');
     try {
+      dock.classList.add('is-custom-pos');
       localStorage.setItem(posKey, JSON.stringify({
         x: parseFloat(dock.style.left) || 0,
         y: parseFloat(dock.style.top) || 0
@@ -260,12 +277,13 @@ function updateFakeStats(){const v=$('#liveVisits');if(v)v.textContent=bumpTotal
 
 
 
-/* V26 — Topnav "..." dropdown with inline styles (bulletproof) */
+
+/* V27 — Topnav "..." dropdown, auto-close on mouse leave */
 (function () {
   function init() {
     const nav = document.querySelector('.topnav');
-    if (!nav || nav.dataset.moreReady === 'v26') return;
-    nav.dataset.moreReady = 'v26';
+    if (!nav || nav.dataset.moreReady === 'v27') return;
+    nav.dataset.moreReady = 'v27';
     nav.querySelectorAll('.nav-more-wrap').forEach((n) => n.remove());
     document.querySelectorAll('.nav-more-menu-portal').forEach((n) => n.remove());
 
@@ -312,7 +330,9 @@ function updateFakeStats(){const v=$('#liveVisits');if(v)v.textContent=bumpTotal
     });
     document.body.appendChild(menu);
 
+    let leaveTimer = null;
     function open() {
+      clearTimeout(leaveTimer);
       const r = btn.getBoundingClientRect();
       menu.style.display = 'flex';
       menu.style.top = r.bottom + 8 + 'px';
@@ -321,9 +341,14 @@ function updateFakeStats(){const v=$('#liveVisits');if(v)v.textContent=bumpTotal
       btn.classList.add('is-open');
     }
     function close() {
+      clearTimeout(leaveTimer);
       menu.style.display = 'none';
       btn.setAttribute('aria-expanded', 'false');
       btn.classList.remove('is-open');
+    }
+    function scheduleClose() {
+      clearTimeout(leaveTimer);
+      leaveTimer = setTimeout(close, 180);
     }
 
     btn.addEventListener('click', (e) => {
@@ -332,8 +357,13 @@ function updateFakeStats(){const v=$('#liveVisits');if(v)v.textContent=bumpTotal
       if (menu.style.display === 'none' || !menu.style.display) open();
       else close();
     });
+    btn.addEventListener('mouseenter', () => clearTimeout(leaveTimer));
+    btn.addEventListener('mouseleave', scheduleClose);
+    menu.addEventListener('mouseenter', () => clearTimeout(leaveTimer));
+    menu.addEventListener('mouseleave', scheduleClose);
+
     document.addEventListener('click', (e) => {
-      if (e.target !== btn && !menu.contains(e.target)) close();
+      if (e.target !== btn && !menu.contains(e.target) && e.target !== wrap) close();
     });
     window.addEventListener('resize', close);
   }
