@@ -216,3 +216,42 @@ function updateFakeStats(){const v=$('#liveVisits');if(v)v.textContent=bumpTotal
     }
   });
 })();
+
+/* V19 — Auth gate + session UI on main pages */
+(function(){
+  // load auth if not present
+  if (typeof Auth === 'undefined') {
+    const s = document.createElement('script');
+    s.src = 'js/auth.js';
+    s.onload = bootAuth;
+    document.head.appendChild(s);
+  } else bootAuth();
+
+  function bootAuth(){
+    // login page handles itself
+    if (/login\.html$/i.test(location.pathname)) return;
+
+    const session = Auth.requireAuth();
+    if (!session) return;
+
+    // session chip in topbar
+    const actions = document.querySelector('.top-actions');
+    if (actions && !document.querySelector('.session-pill')) {
+      const pill = document.createElement('span');
+      pill.className = 'session-pill';
+      const roleLabel = session.role === 'teacher' ? 'GV' : 'HS';
+      pill.innerHTML = `<span>${roleLabel}: ${escapeText(session.username || '')}</span>` +
+        (session.role === 'teacher' ? ` <a href="teacher.html" style="color:#1a4f8c;font-weight:700">Panel</a>` : '') +
+        ` <button type="button" id="sessionLogout">Thoát</button>`;
+      actions.insertBefore(pill, actions.firstChild);
+      document.getElementById('sessionLogout')?.addEventListener('click', () => Auth.logout());
+    }
+
+    // hide theme toggle
+    document.getElementById('themeToggle')?.style.setProperty('display','none');
+  }
+
+  function escapeText(t){
+    return String(t).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+})();

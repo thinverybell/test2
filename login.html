@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Đăng nhập — Thầy Gia Huy</title>
+<meta name="description" content="Đăng nhập học sinh hoặc giáo viên">
+<link rel="icon" href="assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Pacifico&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/auth.css">
+</head>
+<body class="auth-page">
+  <div class="auth-wrap">
+    <div class="auth-brand">
+      <span class="auth-mark">GH</span>
+      <span class="auth-title">Gia Huy</span>
+      <p>Website học tập — đăng nhập để tiếp tục</p>
+    </div>
+
+    <div class="auth-card">
+      <div class="auth-tabs" role="tablist">
+        <button type="button" class="auth-tab active" data-tab="student" role="tab" aria-selected="true">Đăng nhập tài khoản của học sinh</button>
+        <button type="button" class="auth-tab" data-tab="teacher" role="tab" aria-selected="false">Đăng nhập tài khoản của giáo viên</button>
+      </div>
+
+      <div class="auth-panels">
+        <!-- Student -->
+        <form class="auth-panel active" id="studentForm" data-panel="student" autocomplete="on">
+          <label class="auth-field">
+            <span>Tên đăng nhập</span>
+            <input type="text" name="username" id="stuUser" placeholder="Tên đăng nhập" required maxlength="40">
+          </label>
+          <label class="auth-field">
+            <span>Mã mời của học sinh</span>
+            <input type="text" name="invite" id="stuInvite" placeholder="Mã mời của học sinh" required maxlength="40">
+          </label>
+          <button type="submit" class="auth-submit">Đăng nhập học sinh</button>
+        </form>
+
+        <!-- Teacher -->
+        <form class="auth-panel" id="teacherForm" data-panel="teacher" autocomplete="on">
+          <label class="auth-field">
+            <span>Mật khẩu của giáo viên</span>
+            <input type="password" name="password" id="teaPass" placeholder="Mật khẩu của giáo viên" required>
+          </label>
+          <button type="submit" class="auth-submit">Đăng nhập giáo viên</button>
+        </form>
+      </div>
+
+      <button type="button" class="auth-forgot" id="forgotBtn">nhấn vô đây để tạo ticket nếu quên mật khẩu</button>
+    </div>
+
+    <p class="auth-foot">© 2026 Thầy Gia Huy</p>
+  </div>
+
+  <div class="auth-toast" id="authToast" hidden></div>
+
+  <script src="js/auth.js"></script>
+  <script>
+    // Tab switch
+    document.querySelectorAll('.auth-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.auth-tab').forEach(t => {
+          t.classList.toggle('active', t === tab);
+          t.setAttribute('aria-selected', t === tab ? 'true' : 'false');
+        });
+        const key = tab.dataset.tab;
+        document.querySelectorAll('.auth-panel').forEach(p => {
+          p.classList.toggle('active', p.dataset.panel === key);
+        });
+      });
+    });
+
+    // If already logged in, go home
+    (function(){
+      const s = Auth.getSession();
+      if (s) location.replace(s.role === 'teacher' ? 'teacher.html' : 'index.html');
+    })();
+
+    document.getElementById('studentForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const u = document.getElementById('stuUser').value.trim();
+      const inv = document.getElementById('stuInvite').value.trim();
+      const r = Auth.loginStudent(u, inv);
+      if (!r.ok) return Auth.toast(r.msg, true);
+      Auth.toast('Đăng nhập học sinh thành công');
+      setTimeout(() => location.href = 'index.html', 400);
+    });
+
+    document.getElementById('teacherForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const p = document.getElementById('teaPass').value;
+      const r = Auth.loginTeacher(p);
+      if (!r.ok) return Auth.toast(r.msg, true);
+      Auth.toast('Đăng nhập giáo viên thành công');
+      setTimeout(() => location.href = 'teacher.html', 400);
+    });
+
+    document.getElementById('forgotBtn').addEventListener('click', () => {
+      Auth.toast('Vui lòng liên hệ giáo viên hoặc dùng Hỏi đáp sau khi đăng nhập.');
+    });
+  </script>
+</body>
+</html>

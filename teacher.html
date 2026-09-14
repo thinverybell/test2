@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Panel giáo viên — Thầy Gia Huy</title>
+<link rel="icon" href="assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Pacifico&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/auth.css">
+</head>
+<body class="teacher-page">
+  <header class="teacher-top">
+    <div class="brand-row">
+      <span class="auth-mark">GH</span>
+      <div>
+        <h1>Panel giáo viên</h1>
+        <small style="color:#5a7390;font-size:11px">Quản lý tài khoản học sinh & website</small>
+      </div>
+    </div>
+    <div class="top-actions">
+      <a class="t-btn" href="index.html">← Về trang chủ</a>
+      <button type="button" class="t-btn danger" id="logoutBtn">Đăng xuất</button>
+    </div>
+  </header>
+
+  <main class="teacher-body">
+    <section class="t-card">
+      <div class="t-stats" id="statsRow">
+        <div class="t-stat"><b id="statStudents">0</b><span>Học sinh</span></div>
+        <div class="t-stat"><b id="statToday">0</b><span>Tạo hôm nay</span></div>
+        <div class="t-stat"><b>—</b><span>Mật khẩu GV: giahuy-admin</span></div>
+      </div>
+    </section>
+
+    <section class="t-card">
+      <h2>Tạo tài khoản học sinh</h2>
+      <p class="sub">Nhập tên đăng nhập — hệ thống tự tạo mã mời. Gửi tên + mã mời cho học sinh để đăng nhập.</p>
+      <form class="t-form" id="createForm">
+        <input type="text" id="newUsername" placeholder="Tên đăng nhập học sinh" maxlength="40" required>
+        <button type="submit" class="t-btn primary">+ Tạo tài khoản</button>
+      </form>
+      <p id="createResult" class="sub" style="margin-top:12px;margin-bottom:0" hidden></p>
+    </section>
+
+    <section class="t-card">
+      <h2>Danh sách tài khoản học sinh</h2>
+      <p class="sub">Tên đăng nhập và mã mời. Có thể tạo lại mã mời hoặc xóa tài khoản.</p>
+      <div class="t-table-wrap">
+        <table class="t-table">
+          <thead>
+            <tr>
+              <th>Tên đăng nhập</th>
+              <th>Mã mời</th>
+              <th>Ngày tạo</th>
+              <th>Thao tác</th>
+            </tr>
+          </thead>
+          <tbody id="studentBody">
+            <tr><td colspan="4" class="t-empty">Chưa có học sinh nào.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="t-card">
+      <h2>Quản trị website</h2>
+      <p class="sub">Mở trang chủ với quyền giáo viên để upload bài giảng, học liệu, nhạc… (nút Cài đặt trên trang chủ).</p>
+      <a class="t-btn primary" href="index.html">Mở website & quản trị nội dung →</a>
+    </section>
+  </main>
+
+  <div class="auth-toast" id="authToast" hidden></div>
+  <script src="js/auth.js"></script>
+  <script>
+    const session = Auth.requireAuth({ teacherOnly: true });
+    if (!session) throw new Error('redirect');
+
+    document.getElementById('logoutBtn').addEventListener('click', () => Auth.logout());
+
+    function fmtDate(ts) {
+      try { return new Date(ts).toLocaleString('vi-VN'); } catch { return '—'; }
+    }
+
+    function render() {
+      const list = Auth.getStudents().slice().sort((a,b) => (b.created||0) - (a.created||0));
+      document.getElementById('statStudents').textContent = list.length;
+      const start = new Date(); start.setHours(0,0,0,0);
+      document.getElementById('statToday').textContent = list.filter(x => (x.created||0) >= start.getTime()).length;
+
+      const body = document.getElementById('studentBody');
+      if (!list.length) {
+        body.innerHTML = '<tr><td colspan="4" class="t-empty">Chưa có học sinh nào. Hãy tạo tài khoản phía trên.</td></tr>';
+        return;
+      }
+      body.innerHTML = list.map(s => `
+        <tr data-id="${s.id}">
+          <td><strong>${escapeHtml(s.username)}</strong></td>
+          <td><span class="code">${escapeHtml(s.inviteCode)}</span></td>
+          <td>${fmtDate(s.created)}</td>
+          <td class="actions">
+            <button type="button" class="t-btn" data-act="copy" data-code="${escapeHtml(s.inviteCode)}" data-user="${escapeHtml(s.username)}">Sao chép</button>
+            <button type="button" class="t-btn" data-act="reset">Đổi mã mời</button>
+            <button type="button" class="t-btn danger" data-act="del">Xóa</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function escapeHtml(str) {
+      return String(str||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    }
+
+    document.getElementById('createForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const name = document.getElementById('newUsername').value.trim();
+      const r = Auth.createStudent(name);
+      const out = document.getElementById('createResult');
+      if (!r.ok) {
+        out.hidden = false;
+        out.style.color = '#9b2c2c';
+        out.textContent = r.msg;
+        Auth.toast(r.msg, true);
+        return;
+      }
+      out.hidden = false;
+      out.style.color = '#0d3a6e';
+      out.innerHTML = `Đã tạo: <strong>${escapeHtml(r.student.username)}</strong> — mã mời <span class="code">${escapeHtml(r.student.inviteCode)}</span>`;
+      document.getElementById('newUsername').value = '';
+      Auth.toast('Đã tạo tài khoản học sinh');
+      render();
+    });
+
+    document.getElementById('studentBody').addEventListener('click', e => {
+      const btn = e.target.closest('[data-act]');
+      if (!btn) return;
+      const tr = btn.closest('tr');
+      const id = tr && tr.dataset.id;
+      const act = btn.dataset.act;
+      if (act === 'copy') {
+        const text = `Tên: ${btn.dataset.user}\nMã mời: ${btn.dataset.code}`;
+        navigator.clipboard?.writeText(text).then(() => Auth.toast('Đã sao chép tên + mã mời')).catch(() => Auth.toast(text));
+      } else if (act === 'reset' && id) {
+        if (!confirm('Tạo mã mời mới? Mã cũ sẽ không dùng được.')) return;
+        const r = Auth.resetInvite(id);
+        if (r.ok) { Auth.toast('Đã đổi mã mời: ' + r.student.inviteCode); render(); }
+      } else if (act === 'del' && id) {
+        if (!confirm('Xóa tài khoản học sinh này?')) return;
+        Auth.deleteStudent(id);
+        Auth.toast('Đã xóa tài khoản');
+        render();
+      }
+    });
+
+    render();
+  </script>
+</body>
+</html>
