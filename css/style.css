@@ -2470,3 +2470,201 @@ p, span, b, strong, small, label, a, li, td, th, div {
 
 /* Fav / like */
 .fav-btn, .like-btn { color: #5c738a !important; }
+
+/* ============================================================
+   V22 — ALL category pages → white theme
+   page-hero, filters, catalog, personal, detail, upload
+   ============================================================ */
+
+.page-shell {
+  color: #12263a !important;
+}
+
+.page-hero {
+  background: #ffffff !important;
+  background-image: none !important;
+  border: 1px solid #d5dee8 !important;
+  box-shadow: 0 6px 24px rgba(18,38,58,.06) !important;
+  color: #12263a !important;
+}
+.page-hero:after { display: none !important; }
+.page-hero-kicker {
+  color: #163a66 !important;
+}
+.page-hero h1 {
+  color: #0f2d52 !important;
+}
+.page-hero p {
+  color: #5c738a !important;
+}
+
+.page-toolbar .count {
+  color: #5c738a !important;
+}
+
+.catalog-tools,
+.catalog-search,
+.catalog-select,
+.fav-filter {
+  background: #ffffff !important;
+  border: 1px solid #d5dee8 !important;
+  color: #12263a !important;
+}
+.catalog-search span { color: #5c738a !important; }
+.catalog-search input,
+.catalog-select {
+  background: transparent !important;
+  color: #12263a !important;
+}
+.catalog-search input::placeholder {
+  color: #8aa0b6 !important;
+}
+
+.filter-btn {
+  background: #ffffff !important;
+  border: 1px solid #d5dee8 !important;
+  color: #1e3a5f !important;
+}
+.filter-btn.active,
+.filter-btn:hover {
+  background: #e8eef5 !important;
+  border-color: #163a66 !important;
+  color: #0f2d52 !important;
+}
+
+.personal-tab {
+  background: #ffffff !important;
+  border: 1px solid #d5dee8 !important;
+  color: #1e3a5f !important;
+}
+.personal-tab.active {
+  background: #e8eef5 !important;
+  border-color: #163a66 !important;
+  color: #0f2d52 !important;
+}
+
+.upload-box,
+.library-box,
+.detail-box,
+.detail-preview,
+.detail-icon,
+.mini-stat,
+.admin-stat,
+.admin-profile-card {
+  background: #ffffff !important;
+  border-color: #d5dee8 !important;
+  color: #12263a !important;
+}
+.detail-desc,
+.upload-meta,
+.library-row small {
+  color: #5c738a !important;
+}
+.library-row {
+  background: #f5f7fa !important;
+  border-color: #d5dee8 !important;
+  color: #12263a !important;
+}
+.upload-form input,
+.upload-form textarea,
+.upload-form select,
+.dropzone {
+  background: #ffffff !important;
+  border-color: #d5dee8 !important;
+  color: #12263a !important;
+}
+.dropzone {
+  background: #eef3f8 !important;
+  border-color: #163a66 !important;
+  color: #5c738a !important;
+}
+.dropzone strong { color: #0f2d52 !important; }
+
+.admin-tab {
+  background: #ffffff !important;
+  border-color: #d5dee8 !important;
+  color: #1e3a5f !important;
+}
+.admin-tab.active {
+  background: #e8eef5 !important;
+  border-color: #163a66 !important;
+  color: #0f2d52 !important;
+}
+
+.tag {
+  background: #eef3f8 !important;
+  border-color: #d5dee8 !important;
+  color: #1e3a5f !important;
+}
+.featured-badge {
+  color: #163a66 !important;
+  background: #e8eef5 !important;
+  border-color: #b8c9db !important;
+}
+
+.fav-btn {
+  background: #eef3f8 !important;
+  border-color: #d5dee8 !important;
+  color: #5c738a !important;
+}
+.fav-btn.active {
+  color: #c9a227 !important;
+  background: #fff8e6 !important;
+  border-color: #e8d48b !important;
+}
+
+.resource-icon {
+  background: #eef3f8 !important;
+  color: #163a66 !important;
+}
+
+.track-btn {
+  background: #ffffff !important;
+  border-color: #d5dee8 !important;
+  color: #12263a !important;
+}
+.track-btn.active {
+  background: #e8eef5 !important;
+  border-color: #163a66 !important;
+}
+
+/* Search modal / admin modal on light */
+.search-box,
+.admin-box,
+.ticket-panel {
+  background: #ffffff !important;
+  border-color: #d5dee8 !important;
+  color: #12263a !important;
+}
+.search-input,
+.admin-form input,
+.ticket-field input,
+.ticket-field select,
+.ticket-field textarea {
+  background: #f5f7fa !important;
+  border-color: #d5dee8 !important;
+  color: #12263a !important;
+}
+.result {
+  background: #f5f7fa !important;
+  border-color: #d5dee8 !important;
+  color: #12263a !important;
+}
+.modal-heading b { color: #0f2d52 !important; }
+.modal-heading small, .modal-kicker { color: #5c738a !important; }
+.modal-kicker { color: #163a66 !important; }
+
+.secondary-btn {
+  background: #eef3f8 !important;
+  border-color: #d5dee8 !important;
+  color: #12263a !important;
+}
+
+/* Donate modal light */
+.donate-box {
+  background: #ffffff !important;
+  border-color: #d5dee8 !important;
+  color: #12263a !important;
+}
+.donate-box h2, .donate-copy h3 { color: #0f2d52 !important; }
+.donate-box > p, .donate-copy p { color: #5c738a !important; }
