@@ -101,3 +101,106 @@ function updateFakeStats(){const v=$('#liveVisits');if(v)v.textContent=bumpTotal
   }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
   targets.forEach(el => io.observe(el));
 })();
+
+/* V13 — Unified draggable floating action dock */
+(function(){
+  if (document.querySelector('.fab-dock')) return;
+  document.body.classList.add('has-fab-dock');
+
+  const dock = document.createElement('div');
+  dock.className = 'fab-dock';
+  dock.innerHTML = `
+    <div class="fab-dock-handle" title="Kéo để di chuyển"></div>
+    <div class="fab-dock-btns">
+      <button type="button" class="fab-btn" data-fab="donate" title="Ủng hộ Thầy">
+        <span class="fab-ico">♡</span><span>Ủng hộ Thầy</span>
+      </button>
+      <button type="button" class="fab-btn primary" data-fab="ticket" title="Đặt câu hỏi">
+        <span class="fab-ico">🎫</span><span>Đặt câu hỏi</span>
+        <span class="fab-count" id="fabTicketCount">0</span>
+      </button>
+      <button type="button" class="fab-btn mini" data-fab="top" title="Lên đầu trang">
+        <span class="fab-ico">↑</span>
+      </button>
+    </div>
+  `;
+  document.body.appendChild(dock);
+
+  // Sync ticket count from existing launcher if present
+  const syncCount = () => {
+    const src = document.querySelector('.ticket-launcher .ticket-count, .ticket-count');
+    const el = document.getElementById('fabTicketCount');
+    if (el && src) el.textContent = src.textContent || '0';
+  };
+  syncCount();
+  setInterval(syncCount, 2000);
+
+  // Actions
+  dock.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-fab]');
+    if (!btn) return;
+    const act = btn.getAttribute('data-fab');
+    if (act === 'donate') {
+      const open = document.querySelector('[data-open-donate], .donate-fab');
+      if (open) open.click();
+      else {
+        // fallback: try open donate modal
+        const m = document.querySelector('.donate-modal');
+        if (m) m.classList.add('open');
+      }
+    } else if (act === 'ticket') {
+      const open = document.querySelector('[data-open-ticket-nav], .ticket-launcher');
+      if (open) open.click();
+    } else if (act === 'top') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  });
+
+  // Drag
+  const handle = dock.querySelector('.fab-dock-handle');
+  let dragging = false, ox = 0, oy = 0;
+  const posKey = 'giahuy-fab-dock-pos';
+
+  // Restore position
+  try {
+    const saved = JSON.parse(localStorage.getItem(posKey) || 'null');
+    if (saved && typeof saved.x === 'number' && typeof saved.y === 'number') {
+      dock.style.left = saved.x + 'px';
+      dock.style.top = saved.y + 'px';
+      dock.style.right = 'auto';
+      dock.style.bottom = 'auto';
+    }
+  } catch (_) {}
+
+  const onMove = (clientX, clientY) => {
+    if (!dragging) return;
+    const x = Math.max(8, Math.min(window.innerWidth - dock.offsetWidth - 8, clientX - ox));
+    const y = Math.max(8, Math.min(window.innerHeight - dock.offsetHeight - 8, clientY - oy));
+    dock.style.left = x + 'px';
+    dock.style.top = y + 'px';
+    dock.style.right = 'auto';
+    dock.style.bottom = 'auto';
+  };
+
+  handle.addEventListener('pointerdown', (e) => {
+    dragging = true;
+    dock.classList.add('dragging');
+    const rect = dock.getBoundingClientRect();
+    ox = e.clientX - rect.left;
+    oy = e.clientY - rect.top;
+    handle.setPointerCapture(e.pointerId);
+    e.preventDefault();
+  });
+  handle.addEventListener('pointermove', (e) => onMove(e.clientX, e.clientY));
+  handle.addEventListener('pointerup', (e) => {
+    if (!dragging) return;
+    dragging = false;
+    dock.classList.remove('dragging');
+    try {
+      localStorage.setItem(posKey, JSON.stringify({
+        x: parseFloat(dock.style.left) || 0,
+        y: parseFloat(dock.style.top) || 0
+      }));
+    } catch (_) {}
+  });
+})();
