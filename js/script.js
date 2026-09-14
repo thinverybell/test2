@@ -255,3 +255,89 @@ function updateFakeStats(){const v=$('#liveVisits');if(v)v.textContent=bumpTotal
     return String(t).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   }
 })();
+
+
+/* V23 — Topnav overflow "..." dropdown (fixed) */
+(function(){
+  function setupNavMore(){
+    const nav = document.querySelector('.topnav');
+    if (!nav) return;
+    if (nav.dataset.moreReady === '2') return;
+    nav.dataset.moreReady = '2';
+
+    // remove old wrap if any
+    nav.querySelectorAll('.nav-more-wrap').forEach(n => n.remove());
+
+    const links = [...nav.querySelectorAll(':scope > a')];
+    if (links.length < 3) return;
+
+    const wrap = document.createElement('div');
+    wrap.className = 'nav-more-wrap';
+    wrap.innerHTML = '<button type="button" class="nav-more-btn" aria-expanded="false" title="Thêm mục">⋯</button><div class="nav-more-menu" role="menu"></div>';
+    nav.appendChild(wrap);
+    const btn = wrap.querySelector('.nav-more-btn');
+    const menu = wrap.querySelector('.nav-more-menu');
+
+    function measure(){
+      // show all first
+      links.forEach(a => a.classList.remove('nav-overflow-hidden'));
+      menu.innerHTML = '';
+      wrap.style.visibility = 'hidden';
+      wrap.style.display = 'block';
+
+      const actions = document.querySelector('.top-actions');
+      const actionsLeft = actions ? actions.getBoundingClientRect().left : (window.innerWidth - 8);
+      const moreW = 48;
+      const limitX = actionsLeft - moreW - 12;
+
+      // find first link that overflows past limit
+      let cut = links.length;
+      for (let i = 0; i < links.length; i++) {
+        const r = links[i].getBoundingClientRect();
+        if (r.right > limitX) {
+          cut = Math.max(i, 2); // keep at least 2
+          break;
+        }
+      }
+
+      const overflow = links.slice(cut);
+      if (overflow.length) {
+        wrap.style.visibility = 'visible';
+        wrap.style.display = '';
+        overflow.forEach(a => {
+          a.classList.add('nav-overflow-hidden');
+          const clone = a.cloneNode(true);
+          if (a.classList.contains('active')) clone.classList.add('active');
+          menu.appendChild(clone);
+        });
+      } else {
+        wrap.style.display = 'none';
+      }
+    }
+
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const open = menu.classList.toggle('open');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    document.addEventListener('click', () => {
+      menu.classList.remove('open');
+      btn.setAttribute('aria-expanded', 'false');
+    });
+    menu.addEventListener('click', e => e.stopPropagation());
+
+    measure();
+    window.addEventListener('resize', () => {
+      clearTimeout(window._navMoreT);
+      window._navMoreT = setTimeout(measure, 100);
+    });
+    setTimeout(measure, 300);
+    setTimeout(measure, 1000);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupNavMore);
+  } else {
+    setupNavMore();
+  }
+})();

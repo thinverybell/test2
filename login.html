@@ -8,18 +8,12 @@
 <link rel="icon" href="assets/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Pacifico&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/auth.css">
 </head>
 <body class="auth-page">
   <div class="auth-wrap">
-    <div class="auth-brand">
-      <span class="auth-mark">GH</span>
-      <span class="auth-title">Gia Huy</span>
-      <p>Website học tập — đăng nhập để tiếp tục</p>
-    </div>
-
     <div class="auth-card">
       <div class="auth-tabs" role="tablist">
         <button type="button" class="auth-tab active" data-tab="student" role="tab" aria-selected="true">Đăng nhập tài khoản của học sinh</button>
@@ -27,7 +21,6 @@
       </div>
 
       <div class="auth-panels">
-        <!-- Student -->
         <form class="auth-panel active" id="studentForm" data-panel="student" autocomplete="on">
           <label class="auth-field">
             <span>Tên đăng nhập</span>
@@ -40,7 +33,6 @@
           <button type="submit" class="auth-submit">Đăng nhập học sinh</button>
         </form>
 
-        <!-- Teacher -->
         <form class="auth-panel" id="teacherForm" data-panel="teacher" autocomplete="on">
           <label class="auth-field">
             <span>Mật khẩu của giáo viên</span>
@@ -52,15 +44,12 @@
 
       <button type="button" class="auth-forgot" id="forgotBtn">nhấn vô đây để tạo ticket nếu quên mật khẩu</button>
     </div>
-
-    <p class="auth-foot">© 2026 Thầy Gia Huy</p>
   </div>
 
   <div class="auth-toast" id="authToast" hidden></div>
 
   <script src="js/auth.js"></script>
   <script>
-    // Tab switch
     document.querySelectorAll('.auth-tab').forEach(tab => {
       tab.addEventListener('click', () => {
         document.querySelectorAll('.auth-tab').forEach(t => {
@@ -74,7 +63,6 @@
       });
     });
 
-    // If already logged in, go home
     (function(){
       const s = Auth.getSession();
       if (s) location.replace(s.role === 'teacher' ? 'teacher.html' : 'index.html');
