@@ -125,7 +125,21 @@ async function renderHome(){const files=await getAll('files'),mus=await getAll('
 function bumpTotalViews(){const key='giahuy-total-views';let v=Number(localStorage.getItem(key)||0);if(!v)v=8200+Math.floor(Math.random()*3200);v+=1+Math.floor(Math.random()*3);localStorage.setItem(key,String(v));return v}
 function fakeOnlineCount(){const curve=[8,6,5,4,4,5,8,14,20,26,30,34,38,40,42,44,46,50,58,68,74,70,55,20];const base=curve[new Date().getHours()]||20;const jitter=Math.floor(Math.random()*9)-4;return Math.max(3,base+jitter)}
 function updateFakeStats(){const v=$('#liveVisits');if(v)v.textContent=bumpTotalViews().toLocaleString('vi-VN');const o=$('#heroOnlineCount');if(o)o.textContent=fakeOnlineCount().toLocaleString('vi-VN')}
-(async()=>{enhanceStudyUI();ensureDonateUI();await seed();modal();applyAnnouncement();await renderCatalog();await renderHome();await renderMusic();updateFakeStats();setInterval(()=>{const o=$('#heroOnlineCount');if(o)o.textContent=fakeOnlineCount().toLocaleString('vi-VN')},5000)})();
+(async()=>{enhanceStudyUI();ensureDonateUI();await seed();modal();applyAnnouncement();await renderCatalog();await renderHome();await renderMusic();updateFakeStats();setInterval(()=>{const o=$('#heroOnlineCount');if(o)o.textContent=fakeOnlineCount().toLocaleString('vi-VN')},5000)
+window.__giahuyAdmin = {
+  CATS: typeof CATS !== 'undefined' ? CATS : {},
+  getAll: typeof getAll === 'function' ? getAll : null,
+  add: typeof add === 'function' ? add : null,
+  del: typeof del === 'function' ? del : null,
+  seed: typeof seed === 'function' ? seed : null,
+  renderAdmin: typeof renderAdmin === 'function' ? renderAdmin : null,
+  notify: typeof notify === 'function' ? notify : (m)=>console.log(m),
+  esc: typeof esc === 'function' ? esc : (s)=>String(s||'').replace(/[&<>"']/g,c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])),
+  fmtSize: typeof fmtSize === 'function' ? fmtSize : (n)=> (n? (n/1024).toFixed(1)+' KB':'0')
+};
+if (typeof renderAdmin === 'function') window.renderAdmin = renderAdmin;
+if (typeof seed === 'function') window.seed = seed;
+})();
 })();
 
 /* V12 — scroll reveal for professional lecture feel */

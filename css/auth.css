@@ -572,3 +572,121 @@
   font-size: 12px;
   color: #5c738a;
 }
+
+/* ============================================================
+   Login frame (decorative) — scales with page zoom
+   ============================================================ */
+.auth-page {
+  background: #7ec8f0 !important;
+  background-image: none !important;
+}
+.auth-bg-layer {
+  /* soft scenic blur behind frame */
+  background-image: url('../assets/login-bg.png') !important;
+  background-size: cover !important;
+  background-position: center center !important;
+  filter: none !important;
+  opacity: 1 !important;
+}
+
+.auth-wrap.auth-frame {
+  position: relative !important;
+  z-index: 2 !important;
+  width: min(420px, 92vw) !important;
+  /* aspect roughly matches frame art */
+  min-height: min(640px, 92vh) !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  display: flex !important;
+  align-items: stretch !important;
+  justify-content: center !important;
+}
+
+/* Frame image as scalable layer (zooms with Ctrl+/-) */
+.auth-wrap.auth-frame::before {
+  content: '' !important;
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 0 !important;
+  background: url('../assets/login-frame.png') center center / 100% 100% no-repeat !important;
+  pointer-events: none !important;
+}
+
+.auth-wrap.auth-frame .auth-card {
+  position: relative !important;
+  z-index: 1 !important;
+  width: 100% !important;
+  margin: 0 !important;
+  /* inset into the white window of the frame */
+  padding: 22% 12% 16% 12% !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+  min-height: min(640px, 92vh) !important;
+  box-sizing: border-box !important;
+}
+
+.auth-wrap.auth-frame .auth-tabs {
+  background: rgba(255,255,255,.72) !important;
+  border-radius: 12px 12px 0 0 !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(197,212,230,.7) !important;
+  border-bottom: none !important;
+}
+.auth-wrap.auth-frame .auth-panels {
+  background: rgba(255,255,255,.88) !important;
+  border: 1px solid rgba(197,212,230,.7) !important;
+  border-top: none !important;
+  border-radius: 0 0 12px 12px !important;
+  padding: 14px 14px 10px !important;
+  flex: 1 !important;
+}
+.auth-wrap.auth-frame .auth-tab {
+  font-size: 12px !important;
+  padding: 10px 8px !important;
+}
+.auth-wrap.auth-frame .auth-field span {
+  font-size: 12px !important;
+}
+.auth-wrap.auth-frame .auth-field input {
+  background: #fff !important;
+}
+.auth-wrap.auth-frame .auth-forgot {
+  background: transparent !important;
+  margin-top: 8px !important;
+  font-size: 11px !important;
+}
+
+/* Admin head on framed page */
+.auth-wrap.auth-frame .auth-admin-head {
+  padding: 8px 8px 0 !important;
+  background: rgba(255,255,255,.85) !important;
+  border-radius: 12px 12px 0 0 !important;
+  border: 1px solid rgba(197,212,230,.7) !important;
+  border-bottom: none !important;
+}
+.auth-wrap.auth-frame .auth-admin-head + .auth-panels {
+  border-radius: 0 0 12px 12px !important;
+}
+
+@media (max-width: 480px) {
+  .auth-wrap.auth-frame {
+    width: min(360px, 96vw) !important;
+    min-height: min(560px, 90vh) !important;
+  }
+  .auth-wrap.auth-frame .auth-card {
+    padding: 24% 10% 14% 10% !important;
+    min-height: min(560px, 90vh) !important;
+  }
+  .auth-wrap.auth-frame .auth-tab {
+    font-size: 11px !important;
+    padding: 8px 4px !important;
+  }
+}
