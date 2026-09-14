@@ -1642,3 +1642,202 @@ html, body {
 .reveal-ready {
   animation: none !important;
 }
+
+/* ============================================================
+   V17 — Fix script "g" clipping + sidebar panel frame
+   ============================================================ */
+
+/* Script "Gia Huy" — lift baseline so descenders (g, y) aren't clipped */
+.hero-name .script,
+.hero-copy .script,
+.script {
+  line-height: 1.25 !important;
+  padding-bottom: 0.18em !important;
+  display: inline-block !important;
+  overflow: visible !important;
+}
+.hero-name {
+  overflow: visible !important;
+  align-items: flex-start !important;
+  gap: 10px !important;
+}
+.hero-copy {
+  overflow: visible !important;
+}
+.hero-profile {
+  overflow: visible !important;
+}
+.hero {
+  overflow: visible !important;
+}
+/* Keep border radius but allow script descenders to show */
+.hero {
+  overflow: hidden !important; /* keep art clipped */
+}
+.hero-profile,
+.hero-copy,
+.hero-name,
+.hero-name .script {
+  overflow: visible !important;
+}
+.hero-name .script {
+  position: relative;
+  top: -4px; /* đẩy cao một chút */
+  padding-bottom: 0.22em !important;
+}
+
+/* Footer script too */
+.footer-brand .script {
+  line-height: 1.25 !important;
+  padding-bottom: 0.15em !important;
+  overflow: visible !important;
+}
+
+/* ---- Sidebar: dark rounded panel behind menu ---- */
+.sidebar {
+  background: transparent !important;
+  padding: 10px 8px 12px 10px !important;
+}
+.side-inner {
+  background: linear-gradient(165deg, rgba(6, 14, 26, .92), rgba(4, 10, 20, .88)) !important;
+  border: 1px solid rgba(120, 160, 200, .18) !important;
+  border-radius: 16px !important;
+  padding: 10px 8px 12px !important;
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, .28),
+    inset 0 1px 0 rgba(255, 255, 255, .04) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  height: auto !important;
+  max-height: calc(100vh - 84px) !important;
+  overflow: hidden !important;
+}
+.side-quote {
+  border-color: rgba(214, 180, 123, .28) !important;
+  background: rgba(2, 8, 16, .55) !important;
+  margin-top: 10px !important;
+}
+
+/* Slight gap from topbar edge */
+.sidebar {
+  top: 72px !important;
+  padding-top: 8px !important;
+}
+
+/* V17.1 — keep quote visible inside sidebar panel */
+.side-inner {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+  max-height: calc(100vh - 88px) !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+.side-inner::-webkit-scrollbar { display: none !important; width: 0 !important; }
+.side-item {
+  flex: 0 0 auto !important;
+  padding: 6.5px 10px !important;
+  min-height: 32px !important;
+  font-size: 12px !important;
+}
+.side-quote {
+  display: block !important;
+  flex: 0 0 auto !important;
+  margin-top: 8px !important;
+  margin-bottom: 2px !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* V17.2 — quote must sit INSIDE the dark rounded panel */
+.side-inner {
+  position: relative !important;
+  height: auto !important;
+  max-height: calc(100vh - 88px) !important;
+  padding-bottom: 12px !important;
+}
+.side-quote {
+  position: relative !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  top: auto !important;
+  margin: 10px 2px 4px !important;
+  width: auto !important;
+}
+/* If viewport is short, allow panel to scroll quietly (no bar) */
+@media (max-height: 820px) {
+  .side-item { padding: 5px 10px !important; min-height: 30px !important; font-size: 11.5px !important; }
+  .side-quote { font-size: 9.5px !important; padding: 8px 10px !important; }
+}
+
+/* V17.3 — force solid dark panel background (gradient was not applying) */
+.sidebar .side-inner,
+aside.sidebar .side-inner,
+.side-inner {
+  background-color: #070f1a !important;
+  background-image: linear-gradient(165deg, #0a1524 0%, #060d18 100%) !important;
+  border: 1px solid rgba(130, 170, 210, .2) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 14px 40px rgba(0,0,0,.35) !important;
+  padding: 10px 8px 12px !important;
+  overflow: hidden !important;
+}
+.side-quote {
+  background: rgba(0, 0, 0, .35) !important;
+}
+
+/* ============================================================
+   V18 — Center-align quick buttons + live stats
+   ============================================================ */
+
+/* Purple action buttons in "Khu vực nhanh" cards */
+.resource-card .card-actions,
+.section .resource-card .card-actions {
+  display: flex !important;
+  justify-content: center !important;
+  width: 100% !important;
+}
+.resource-card .small-btn,
+.resource-card .small-btn.primary,
+.section .small-btn.primary {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  width: 100% !important;
+  margin: 0 auto !important;
+}
+
+/* Live stats grid cells — center everything */
+.live-stats {
+  text-align: center !important;
+}
+.live-stats > div {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+}
+.live-stats span,
+.live-stats b {
+  text-align: center !important;
+  width: 100% !important;
+  display: block !important;
+}
+
+/* Hero stats bar also centered (consistency) */
+.hero-stats > div {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+}
+.hero-stats strong,
+.hero-stats span {
+  text-align: center !important;
+}
