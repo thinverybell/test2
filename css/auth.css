@@ -402,123 +402,45 @@
   .auth-panels { padding: 20px 16px 14px; }
 }
 
-/* Login page background image */
-.auth-page {
-  background-color: #eaf4fc !important;
-  background-image: url('../assets/login-bg.png') !important;
-  background-size: cover !important;
-  background-position: center center !important;
-  background-repeat: no-repeat !important;
-  min-height: 100vh !important;
-}
-
-.auth-wrap {
-  width: min(440px, 94vw) !important;
-  margin: 0 auto !important;
-}
-
-/* Soft glass card so form stays readable on busy bg */
-.auth-card {
-  background: rgba(255, 255, 255, 0.92) !important;
-  backdrop-filter: blur(10px) !important;
-  -webkit-backdrop-filter: blur(10px) !important;
-  border: 1px solid rgba(197, 212, 230, 0.8) !important;
-  box-shadow: 0 20px 50px rgba(15, 39, 68, 0.12) !important;
-}
-
-.auth-brand { display: none !important; }
-.auth-foot { display: none !important; }
-
-/* Login background fit — match full viewport cleanly */
-.auth-page {
-  background-color: #eaf4fc !important;
-  background-image: url('../assets/login-bg.png') !important;
-  background-repeat: no-repeat !important;
-  background-attachment: fixed !important;
-  background-size: cover !important;
-  background-position: center center !important;
-  min-height: 100vh !important;
-  min-height: 100dvh !important;
-}
-
-/* On wide screens keep important sides (books left / robot right) visible */
-@media (min-width: 1200px) {
-  .auth-page {
-    background-size: cover !important;
-    background-position: center 40% !important;
-  }
-}
-
-/* Tall / narrow: bias slightly lower so books + robot stay in frame */
-@media (max-width: 900px) {
-  .auth-page {
-    background-size: cover !important;
-    background-position: center 55% !important;
-  }
-}
-
-@media (max-width: 600px) {
-  .auth-page {
-    background-size: cover !important;
-    background-position: center bottom !important;
-  }
-}
-
-/* Card stays centered over the empty middle of the art */
-.auth-wrap {
-  width: min(420px, 92vw) !important;
-  margin: 0 auto !important;
-  position: relative;
-  z-index: 2;
-}
-
 /* ============================================================
-   Login BG — exact full-viewport match
+   LOGIN PAGE — clean bg + frame (no stretch / no blur / đúng vùng trắng)
+   Frame PNG: 403×619 → aspect-ratio 403/619
+   Vùng form trắng: top ~42%, left ~14%, right ~7%, bottom ~10%
    ============================================================ */
+
 .auth-page {
   position: relative !important;
   min-height: 100vh !important;
   min-height: 100dvh !important;
   margin: 0 !important;
+  padding: 16px !important;
   overflow-x: hidden !important;
-  background: #e8f3fc !important;
+  background: #7ec8f0 !important;
   background-image: none !important;
   display: grid !important;
   place-items: center !important;
+  font-family: 'Be Vietnam Pro', sans-serif !important;
 }
 
+/* Background layer — cover, không stretch, không blur */
 .auth-bg-layer {
   position: fixed !important;
   inset: 0 !important;
   z-index: 0 !important;
   pointer-events: none !important;
-  background-color: #e8f3fc !important;
+  background-color: #7ec8f0 !important;
   background-image: url('../assets/login-bg.png') !important;
   background-repeat: no-repeat !important;
-  /* stretch exactly to viewport so no crop mismatch */
-  background-size: 100% 100% !important;
+  background-size: cover !important;
   background-position: center center !important;
+  filter: none !important;
+  opacity: 1 !important;
+  -webkit-filter: none !important;
 }
 
-.auth-wrap {
-  position: relative !important;
-  z-index: 2 !important;
-  width: min(420px, 92vw) !important;
-  margin: 0 !important;
-}
-
-@media (min-aspect-ratio: 16/9) {
-  .auth-bg-layer {
-    background-size: 100% 100% !important;
-  }
-}
-
-@media (max-aspect-ratio: 4/3) {
-  .auth-bg-layer {
-    /* on tall screens prefer cover to avoid extreme stretch */
-    background-size: cover !important;
-    background-position: center bottom !important;
-  }
+.auth-brand,
+.auth-foot {
+  display: none !important;
 }
 
 /* Corner admin gear */
@@ -530,82 +452,50 @@
   width: 44px !important;
   height: 44px !important;
   border-radius: 12px !important;
-  background: rgba(255,255,255,.92) !important;
-  border: 1px solid rgba(197,212,230,.9) !important;
-  box-shadow: 0 8px 24px rgba(15,39,68,.12) !important;
+  background: rgba(255, 255, 255, 0.92) !important;
+  border: 1px solid rgba(197, 212, 230, 0.9) !important;
+  box-shadow: 0 8px 24px rgba(15, 39, 68, 0.12) !important;
   display: grid !important;
   place-items: center !important;
   text-decoration: none !important;
   color: #163a66 !important;
   font-size: 18px !important;
-  transition: .2s ease !important;
+  transition: 0.2s ease !important;
 }
 .admin-corner:hover {
   background: #fff !important;
   transform: translateY(-2px) !important;
-  box-shadow: 0 12px 28px rgba(15,39,68,.16) !important;
+  box-shadow: 0 12px 28px rgba(15, 39, 68, 0.16) !important;
 }
-.admin-corner-ico { line-height: 1; }
-
-.auth-admin-head {
-  text-align: center;
-  padding: 22px 22px 0;
-}
-.auth-admin-ico {
-  width: 48px;
-  height: 48px;
-  margin: 0 auto 10px;
-  border-radius: 12px;
-  background: #e8eef5;
-  color: #163a66;
-  display: grid;
-  place-items: center;
-  font-size: 22px;
-}
-.auth-admin-head h1 {
-  margin: 0;
-  font-size: 16px;
-  color: #0f2d52;
-}
-.auth-admin-head p {
-  margin: 6px 0 0;
-  font-size: 12px;
-  color: #5c738a;
+.admin-corner-ico {
+  line-height: 1;
 }
 
-/* ============================================================
-   Login frame (decorative) — scales with page zoom
-   ============================================================ */
-.auth-page {
-  background: #7ec8f0 !important;
-  background-image: none !important;
-}
-.auth-bg-layer {
-  /* soft scenic blur behind frame */
-  background-image: url('../assets/login-bg.png') !important;
-  background-size: cover !important;
-  background-position: center center !important;
-  filter: none !important;
-  opacity: 1 !important;
-}
-
+/* Frame container — giữ đúng tỷ lệ PNG, không méo */
 .auth-wrap.auth-frame {
   position: relative !important;
   z-index: 2 !important;
-  width: min(420px, 92vw) !important;
-  /* aspect roughly matches frame art */
-  min-height: min(640px, 92vh) !important;
+  width: min(400px, 92vw) !important;
+  aspect-ratio: 403 / 619 !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: 92vh !important;
   padding: 0 !important;
   margin: 0 !important;
   background: transparent !important;
   box-shadow: none !important;
   border: none !important;
-  display: flex !important;
-  align-items: stretch !important;
-  justify-content: center !important;
+  display: block !important;
 }
 
-/* Frame image as scalable layer (zooms with Ctrl+/-) */
+/* Khi max-height giới hạn → scale width theo */
+@supports (aspect-ratio: 1) {
+  .auth-wrap.auth-frame {
+    max-width: min(400px, 92vw, calc(92vh * 403 / 619)) !important;
+  }
+}
+
+/* Frame image — 100% 100% vì container đã đúng aspect */
 .auth-wrap.auth-frame::before {
   content: '' !important;
   position: absolute !important;
@@ -613,15 +503,19 @@
   z-index: 0 !important;
   background: url('../assets/login-frame.png') center center / 100% 100% no-repeat !important;
   pointer-events: none !important;
+  filter: none !important;
+  image-rendering: auto !important;
 }
 
+/* Form card nằm đúng trong vùng trắng của frame */
 .auth-wrap.auth-frame .auth-card {
   position: relative !important;
   z-index: 1 !important;
   width: 100% !important;
+  height: 100% !important;
   margin: 0 !important;
-  /* inset into the white window of the frame */
-  padding: 22% 12% 16% 12% !important;
+  /* inset khớp vùng trắng: top 42%, left 14%, right 7%, bottom 10% */
+  padding: 42% 8% 11% 14% !important;
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;
@@ -629,64 +523,110 @@
   display: flex !important;
   flex-direction: column !important;
   justify-content: flex-start !important;
-  min-height: min(640px, 92vh) !important;
   box-sizing: border-box !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
+/* Tabs + panels — nền trắng rõ, không blur */
 .auth-wrap.auth-frame .auth-tabs {
-  background: rgba(255,255,255,.72) !important;
-  border-radius: 12px 12px 0 0 !important;
+  background: #fff !important;
+  border-radius: 10px 10px 0 0 !important;
   overflow: hidden !important;
-  border: 1px solid rgba(197,212,230,.7) !important;
+  border: 1px solid rgba(197, 212, 230, 0.85) !important;
   border-bottom: none !important;
+  flex-shrink: 0 !important;
 }
 .auth-wrap.auth-frame .auth-panels {
-  background: rgba(255,255,255,.88) !important;
-  border: 1px solid rgba(197,212,230,.7) !important;
+  background: #fff !important;
+  border: 1px solid rgba(197, 212, 230, 0.85) !important;
   border-top: none !important;
-  border-radius: 0 0 12px 12px !important;
-  padding: 14px 14px 10px !important;
-  flex: 1 !important;
+  border-radius: 0 0 10px 10px !important;
+  padding: 12px 12px 8px !important;
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow: auto !important;
 }
 .auth-wrap.auth-frame .auth-tab {
-  font-size: 12px !important;
-  padding: 10px 8px !important;
+  font-size: 11.5px !important;
+  padding: 10px 6px !important;
+  line-height: 1.3 !important;
 }
 .auth-wrap.auth-frame .auth-field span {
-  font-size: 12px !important;
+  font-size: 11.5px !important;
 }
 .auth-wrap.auth-frame .auth-field input {
   background: #fff !important;
+  font-size: 13px !important;
+  padding: 10px 14px !important;
+}
+.auth-wrap.auth-frame .auth-submit {
+  padding: 11px 16px !important;
+  font-size: 13px !important;
 }
 .auth-wrap.auth-frame .auth-forgot {
   background: transparent !important;
-  margin-top: 8px !important;
-  font-size: 11px !important;
+  margin-top: 6px !important;
+  font-size: 10.5px !important;
+  padding: 8px 4px !important;
+  border: none !important;
+  color: #5a7390 !important;
+  flex-shrink: 0 !important;
 }
 
 /* Admin head on framed page */
-.auth-wrap.auth-frame .auth-admin-head {
-  padding: 8px 8px 0 !important;
-  background: rgba(255,255,255,.85) !important;
-  border-radius: 12px 12px 0 0 !important;
-  border: 1px solid rgba(197,212,230,.7) !important;
-  border-bottom: none !important;
+.auth-admin-head {
+  text-align: center;
+  padding: 12px 10px 0;
 }
-.auth-wrap.auth-frame .auth-admin-head + .auth-panels {
-  border-radius: 0 0 12px 12px !important;
+.auth-admin-ico {
+  width: 42px;
+  height: 42px;
+  margin: 0 auto 8px;
+  border-radius: 10px;
+  background: #e8eef5;
+  color: #163a66;
+  display: grid;
+  place-items: center;
+  font-size: 20px;
+}
+.auth-admin-head h1 {
+  margin: 0;
+  font-size: 15px;
+  color: #0f2d52;
+}
+.auth-admin-head p {
+  margin: 4px 0 0;
+  font-size: 11px;
+  color: #5c738a;
 }
 
+.auth-wrap.auth-frame .auth-admin-head {
+  padding: 6px 6px 0 !important;
+  background: #fff !important;
+  border-radius: 10px 10px 0 0 !important;
+  border: 1px solid rgba(197, 212, 230, 0.85) !important;
+  border-bottom: none !important;
+  flex-shrink: 0 !important;
+}
+.auth-wrap.auth-frame .auth-admin-head + .auth-panels {
+  border-radius: 0 0 10px 10px !important;
+}
+
+/* Mobile */
 @media (max-width: 480px) {
   .auth-wrap.auth-frame {
-    width: min(360px, 96vw) !important;
-    min-height: min(560px, 90vh) !important;
+    width: min(360px, 94vw) !important;
+    max-width: min(360px, 94vw, calc(90vh * 403 / 619)) !important;
   }
   .auth-wrap.auth-frame .auth-card {
-    padding: 24% 10% 14% 10% !important;
-    min-height: min(560px, 90vh) !important;
+    padding: 41% 7% 10% 13% !important;
   }
   .auth-wrap.auth-frame .auth-tab {
-    font-size: 11px !important;
+    font-size: 10.5px !important;
     padding: 8px 4px !important;
+  }
+  .auth-wrap.auth-frame .auth-panels {
+    padding: 10px 8px 6px !important;
   }
 }
