@@ -525,3 +525,40 @@ function updateFakeStats(){const v=$('#liveVisits');if(v)v.textContent=bumpTotal
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', tryOpen);
   else tryOpen();
 })();
+
+/* V29 — Admin tools open as full page (no modal window) */
+(function () {
+  function isStaff() {
+    try {
+      const s = JSON.parse(localStorage.getItem('giahuy-session') || 'null');
+      return s && (s.role === 'admin' || s.role === 'teacher');
+    } catch { return false; }
+  }
+
+  function goAdmin(tab) {
+    const q = tab ? ('?tab=' + encodeURIComponent(tab)) : '';
+    location.href = 'admin-panel.html' + q;
+  }
+
+  function wire() {
+    if (!isStaff()) return;
+
+    // Settings gear / admin open → full page
+    ['#adminOpen', '.settings-trigger', '[data-open-settings]', '.settings-side-link'].forEach(sel => {
+      document.querySelectorAll(sel).forEach(el => {
+        el.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          goAdmin('upload');
+        }, true);
+      });
+    });
+
+    // Override openAdmin if present
+    window.openAdmin = function () { goAdmin('upload'); };
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wire);
+  else wire();
+  setTimeout(wire, 400);
+})();

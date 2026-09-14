@@ -39,11 +39,11 @@
       <h2>Công cụ panel</h2>
       <p class="sub" id="toolsHint">Các chức năng quản lý nội dung.</p>
       <div class="t-form" style="flex-wrap:wrap" id="toolBtns">
-        <a class="t-btn primary" href="index.html#open-admin-upload" data-admin-tab="upload">⬆ Upload</a>
-        <a class="t-btn primary" href="index.html#open-admin-library" data-admin-tab="library">📚 Thư viện</a>
-        <a class="t-btn primary" href="index.html#open-admin-stats" data-admin-tab="stats">📊 Thống kê</a>
-        <a class="t-btn primary" href="index.html#open-admin-music" data-admin-tab="music" id="btnMusic" hidden>🎵 Nhạc</a>
-        <a class="t-btn" href="index.html#open-admin-full" id="btnFullSettings" hidden>⚙ Toàn bộ Cài đặt</a>
+        <a class="t-btn primary" href="admin-panel.html?tab=upload" data-admin-tab="upload">⬆ Upload</a>
+        <a class="t-btn primary" href="admin-panel.html?tab=library" data-admin-tab="library">📚 Thư viện</a>
+        <a class="t-btn primary" href="admin-panel.html?tab=stats" data-admin-tab="stats">📊 Thống kê</a>
+        <a class="t-btn primary" href="admin-panel.html?tab=music" data-admin-tab="music" id="btnMusic" hidden>🎵 Nhạc</a>
+        <a class="t-btn" href="admin-panel.html?tab=upload" id="btnFullSettings" hidden>⚙ Toàn bộ Cài đặt</a>
       </div>
     </section>
 
@@ -112,22 +112,7 @@
 
     document.getElementById('logoutBtn').addEventListener('click', () => Auth.logout());
 
-    // Open admin tools on homepage via hash
-    document.querySelectorAll('[data-admin-tab]').forEach(a => {
-      a.addEventListener('click', e => {
-        e.preventDefault();
-        const tab = a.dataset.adminTab;
-        localStorage.setItem('giahuy-admin', '1');
-        localStorage.setItem('giahuy-open-admin-tab', tab || 'upload');
-        location.href = 'index.html#admin-' + (tab || 'upload');
-      });
-    });
-    document.getElementById('btnFullSettings')?.addEventListener('click', e => {
-      e.preventDefault();
-      localStorage.setItem('giahuy-admin', '1');
-      localStorage.setItem('giahuy-open-admin-tab', 'upload');
-      location.href = 'index.html#admin-upload';
-    });
+    // links already point to admin-panel.html?tab=...
 
     function fmtDate(ts){ try{return new Date(ts).toLocaleString('vi-VN')}catch{return '—'} }
     function escapeHtml(str){return String(str||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
