@@ -7,7 +7,8 @@
 <link rel="icon" href="assets/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Pacifico&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/@coreui/icons/css/free.min.css">
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/auth.css">
 <style>
@@ -19,56 +20,33 @@
     color: #12263a;
   }
   .ap-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    padding: 16px 22px;
-    background: #fff;
-    border-bottom: 1px solid #dce5ef;
-    position: sticky;
-    top: 0;
-    z-index: 20;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding: 16px 22px; background: #fff; border-bottom: 1px solid #dce5ef;
+    position: sticky; top: 0; z-index: 20;
   }
   .ap-top h1 { margin: 0; font-size: 18px; color: #0f2d52; }
   .ap-top small { color: #5c738a; font-size: 12px; }
-  .ap-body {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 22px 16px 48px;
-  }
-  /* flatten modal styles into page */
+  .ap-body { max-width: 1100px; margin: 0 auto; padding: 22px 16px 48px; }
   .admin-page .admin-modal {
-    position: static !important;
-    inset: auto !important;
-    display: block !important;
-    background: transparent !important;
-    backdrop-filter: none !important;
-    padding: 0 !important;
-    place-items: stretch !important;
+    position: static !important; inset: auto !important; display: block !important;
+    background: transparent !important; backdrop-filter: none !important; padding: 0 !important;
   }
   .admin-page .admin-box {
-    width: 100% !important;
-    max-width: none !important;
-    max-height: none !important;
-    margin: 0 !important;
-    border-radius: 18px !important;
+    width: 100% !important; max-width: none !important; max-height: none !important;
+    margin: 0 !important; border-radius: 18px !important;
     box-shadow: 0 10px 36px rgba(18,38,58,.08) !important;
-    border: 1px solid #dce5ef !important;
-    background: #fff !important;
-    padding: 22px !important;
-    overflow: visible !important;
+    border: 1px solid #dce5ef !important; background: #fff !important;
+    padding: 22px !important; overflow: visible !important;
   }
-  .admin-page .admin-box > .close { display: none !important; }
-  .admin-page #adminForm { display: none !important; }
+  .admin-page .admin-box > .close,
+  .admin-page #adminForm,
   .admin-page #adminLoader { display: none !important; }
-  .admin-page #adminPanel {
-    display: block !important;
-  }
-  .admin-page .admin-panel.hidden,
-  .admin-page #adminPanel.hidden {
-    display: block !important;
-  }
+  .admin-page #adminPanel { display: block !important; }
+  .admin-page #adminWorkspace { min-height: 280px; margin-top: 16px; }
+  .admin-page .fab-dock,
+  .admin-page .donate-fab,
+  .admin-page .ticket-launcher,
+  .admin-page .back-top { display: none !important; }
   .t-btn {
     display: inline-flex; align-items: center; gap: 6px;
     border: 1px solid #c5d4e6; background: #fff; color: #12263a;
@@ -82,7 +60,7 @@
   <header class="ap-top">
     <div>
       <h1 id="apTitle">Quản trị website</h1>
-      <small id="apSub">Upload · Thư viện · Nhạc · Thống kê</small>
+      <small id="apSub">Upload · Thư viện · Thống kê</small>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
       <a class="t-btn" href="teacher.html">← Panel tài khoản</a>
@@ -97,7 +75,7 @@
         <div class="modal-heading">
           <span class="modal-kicker">ADMIN CENTER</span>
           <b>Quản trị website</b>
-          <small>Đổi avatar, upload tài nguyên, quản lý danh sách và nhạc.</small>
+          <small id="apDesc">Upload tài nguyên, quản lý thư viện và thống kê.</small>
         </div>
         <form class="admin-form hidden" id="adminForm"></form>
         <div class="admin-loader hidden" id="adminLoader"></div>
@@ -110,18 +88,18 @@
             </div>
             <span class="admin-badge" id="apBadge">ADMIN</span>
           </div>
-          <div class="admin-actions">
-            <button class="primary-btn" id="changeAvatarBtn">Đổi ảnh đại diện</button>
-            <button class="secondary-btn" id="resetAvatarBtn">Khôi phục avatar</button>
+          <div class="admin-actions" id="apAvatarActions">
+            <button class="primary-btn" id="changeAvatarBtn" type="button">Đổi ảnh đại diện</button>
+            <button class="secondary-btn" id="resetAvatarBtn" type="button">Khôi phục avatar</button>
             <input id="avatarInput" type="file" accept="image/*" hidden>
           </div>
-          <div class="admin-tabs">
-            <button class="admin-tab active" data-admin-tab="upload">Upload</button>
-            <button class="admin-tab" data-admin-tab="library">Thư viện</button>
-            <button class="admin-tab" data-admin-tab="music" id="tabMusic">Nhạc</button>
-            <button class="admin-tab" data-admin-tab="stats">Thống kê</button>
+          <div class="admin-tabs" id="apTabs">
+            <button type="button" class="admin-tab active" data-admin-tab="upload">Upload</button>
+            <button type="button" class="admin-tab" data-admin-tab="library">Thư viện</button>
+            <button type="button" class="admin-tab" data-admin-tab="music" id="tabMusic">Nhạc</button>
+            <button type="button" class="admin-tab" data-admin-tab="stats">Thống kê</button>
           </div>
-          <div id="adminWorkspace"></div>
+          <div id="adminWorkspace"><p style="color:#5c738a;padding:12px 0">Đang tải công cụ…</p></div>
         </div>
       </div>
     </div>
@@ -134,39 +112,79 @@
     (function () {
       const session = Auth.requireAuth({ staffOnly: true });
       if (!session) return;
+
       const isAdmin = session.role === 'admin';
-      const isTeacher = session.role === 'teacher';
+      localStorage.setItem('giahuy-admin', '1');
+      // clear bad fab pos globally when visiting panel
+      try { localStorage.removeItem('giahuy-fab-dock-pos'); } catch (_) {}
 
       document.getElementById('apTitle').textContent = isAdmin ? 'Panel Quản trị viên' : 'Panel Giáo viên — Công cụ';
       document.getElementById('apSub').textContent = isAdmin
-        ? 'Đầy đủ: Upload · Thư viện · Nhạc · Thống kê · Avatar'
-        : 'Chỉ Upload · Thư viện · Thống kê';
+        ? 'Upload · Thư viện · Nhạc · Thống kê · Avatar'
+        : 'Upload · Thư viện · Thống kê';
       document.getElementById('apBadge').textContent = isAdmin ? 'ADMIN' : 'GIÁO VIÊN';
+      document.getElementById('apDesc').textContent = isAdmin
+        ? 'Đổi avatar, upload tài nguyên, quản lý danh sách và nhạc.'
+        : 'Upload tài nguyên, quản lý thư viện và xem thống kê.';
 
       if (!isAdmin) {
         document.getElementById('tabMusic').style.display = 'none';
-        document.getElementById('changeAvatarBtn').style.display = 'none';
-        document.getElementById('resetAvatarBtn').style.display = 'none';
+        document.getElementById('apAvatarActions').style.display = 'none';
       }
 
-      localStorage.setItem('giahuy-admin', '1');
-
-      // open requested tab
       const params = new URLSearchParams(location.search);
-      const want = params.get('tab') || localStorage.getItem('giahuy-open-admin-tab') || 'upload';
-      localStorage.removeItem('giahuy-open-admin-tab');
+      let want = params.get('tab') || 'upload';
+      if (!isAdmin && want === 'music') want = 'upload';
 
-      function boot() {
-        if (typeof renderAdmin === 'function') {
-          renderAdmin(want);
-          document.querySelectorAll('.admin-tab').forEach(b => {
-            b.classList.toggle('active', b.dataset.adminTab === want);
-          });
-        } else {
-          setTimeout(boot, 200);
+      function setActiveTab(tab) {
+        document.querySelectorAll('.admin-tab').forEach(b => {
+          b.classList.toggle('active', b.dataset.adminTab === tab);
+        });
+      }
+
+      async function loadTab(tab) {
+        setActiveTab(tab);
+        const w = document.getElementById('adminWorkspace');
+        if (!w) return;
+        if (typeof renderAdmin !== 'function') {
+          w.innerHTML = '<p style="color:#9b2c2c">Không tải được module quản trị. Thử tải lại trang.</p>';
+          return;
+        }
+        try {
+          if (typeof seed === 'function') await seed();
+          await renderAdmin(tab);
+          // if still empty, show fallback message
+          if (!w.innerHTML.trim()) {
+            w.innerHTML = '<p style="color:#5c738a">Không có nội dung tab này.</p>';
+          }
+        } catch (err) {
+          console.error(err);
+          w.innerHTML = '<p style="color:#9b2c2c">Lỗi tải tab: ' + (err && err.message ? err.message : err) + '</p>';
         }
       }
-      setTimeout(boot, 300);
+
+      document.querySelectorAll('.admin-tab').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const t = btn.dataset.adminTab;
+          if (!isAdmin && t === 'music') return;
+          loadTab(t);
+        });
+      });
+
+      // boot with retries (script.js may still be defining functions)
+      let tries = 0;
+      function boot() {
+        tries++;
+        if (typeof renderAdmin === 'function') {
+          loadTab(want);
+        } else if (tries < 30) {
+          setTimeout(boot, 150);
+        } else {
+          document.getElementById('adminWorkspace').innerHTML =
+            '<p style="color:#9b2c2c">Không khởi tạo được công cụ quản trị.</p>';
+        }
+      }
+      setTimeout(boot, 250);
 
       document.getElementById('apLogout').addEventListener('click', () => Auth.logout());
     })();

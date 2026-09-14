@@ -3145,3 +3145,73 @@ body.has-fab-dock .back-top {
     max-width: 140px !important;
   }
 }
+
+/* Hide floaters on panel pages */
+body.admin-page .fab-dock,
+body.teacher-page .fab-dock,
+body.admin-page .donate-fab,
+body.teacher-page .donate-fab,
+body.admin-page .ticket-launcher,
+body.teacher-page .ticket-launcher,
+body.admin-page .back-top,
+body.teacher-page .back-top {
+  display: none !important;
+}
+
+/* Force fab dock bottom-right on main site */
+.fab-dock {
+  position: fixed !important;
+  right: 20px !important;
+  bottom: 20px !important;
+  left: auto !important;
+  top: auto !important;
+  z-index: 1200 !important;
+}
+.fab-dock.is-custom-pos {
+  /* still never sit in left sidebar zone */
+}
+
+/* CoreUI Icons sizing */
+.cil-nav-ico,
+.side-icon,
+.fab-ico,
+.cat-icon,
+.jp-ui-icon {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  line-height: 1 !important;
+}
+.cil-nav-ico i,
+.side-icon i,
+.fab-ico i,
+.cat-icon i,
+[class^="cil-"],
+[class*=" cil-"] {
+  font-size: 1.05em;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+}
+.topnav a .cil-nav-ico {
+  margin-right: 6px;
+  font-size: 15px;
+  color: #163a66;
+}
+.topnav a .nav-label { vertical-align: middle; }
+.side-icon {
+  width: 22px !important;
+  min-width: 22px !important;
+  font-size: 16px !important;
+  color: #163a66 !important;
+}
+.side-icon i { font-size: 16px; }
+.fab-ico i { font-size: 15px; }
+.cat-icon i { font-size: 22px; color: #163a66; }
+
+/* hide old landmark svgs if any remain */
+.jp-svg, .jp-ui-icon .jp-svg { display: none !important; }

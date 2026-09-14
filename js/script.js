@@ -15,20 +15,62 @@ async function tx(store,mode,cb){const d=await db();return new Promise((res,rej)
 function getAll(store){return tx(store,'readonly',s=>new Promise(resolve=>{const r=s.getAll();r.onsuccess=()=>resolve(r.result)}))}
 function add(store,obj){return tx(store,'readwrite',s=>s.add(obj))}
 function del(store,id){return tx(store,'readwrite',s=>s.delete(id))}
-async function seed(){const files=await getAll('files');if(!files.length)for(const x of DEFAULT)await add('files',{...x,id:crypto.randomUUID(),fileName:x.name+'.txt',mime:'text/plain',size:0,blob:null,created:Date.now(),builtin:true,featured:false})}
+window.seed = async function seed(){const files=await getAll('files');if(!files.length)for(const x of DEFAULT)await add('files',{...x,id:crypto.randomUUID(),fileName:x.name+'.txt',mime:'text/plain',size:0,blob:null,created:Date.now(),builtin:true,featured:false})}
 function notify(msg,type='ok'){const t=$('#toast');if(!t)return;t.textContent=msg;t.dataset.type=type;t.classList.add('show');clearTimeout(window.__t);window.__t=setTimeout(()=>t.classList.remove('show'),2800)}
 function avatarSet(src){$$('.avatar-ring img,.mini-avatar img,.admin-avatar-preview img').forEach(i=>i.src=src)}
 function jpIcon(id){return `<svg class="jp-svg" viewBox="0 0 48 48" aria-hidden="true"><use href="assets/landmarks.svg#${id}"></use></svg>`}
 function enhanceStudyUI(){
-  const navIcons=['book','pencil','cap','bulb','compass','pencil','book','cap','bulb','compass'];
-  $$('.topnav a').forEach((a,i)=>{if(!a.querySelector('.jp-ui-icon')) a.insertAdjacentHTML('afterbegin',`<span class="jp-ui-icon">${jpIcon(navIcons[i%navIcons.length])}</span>`)})
-  $$('.side-item').forEach((a,i)=>{const icon=a.querySelector('.side-icon'); if(icon&&!icon.querySelector('.jp-svg')){icon.textContent='';icon.insertAdjacentHTML('beforeend',jpIcon(navIcons[i%navIcons.length]))}})
-  $$('.category-grid .cat-card').forEach((a,i)=>{const x=a.querySelector('.cat-icon');if(x&&!x.querySelector('.jp-svg')){const old=x.textContent.trim();x.textContent='';x.insertAdjacentHTML('beforeend',jpIcon(['book','pencil','cap','bulb','compass'][i%5]));x.dataset.label=old}})
-  $$('.primary-btn,.secondary-btn,.small-btn,.ticket-btn,.section-link').forEach((b,i)=>{if(!b.querySelector('.jp-button-icon') && b.textContent.trim()){const id=['book','cap','pencil','compass','bulb'][i%5];b.insertAdjacentHTML('afterbegin',`<span class="jp-button-icon">${jpIcon(id)}</span>`)}})
+  const NAV = [
+    {match:/trang chủ|index/i, icon:'cil-home'},
+    {match:/bài giảng|plugins/i, icon:'cil-book'},
+    {match:/config|giáo án/i, icon:'cil-notes'},
+    {match:/mod|bài tập/i, icon:'cil-task'},
+    {match:/học liệu|assets/i, icon:'cil-education'},
+    {match:/công cụ|tools/i, icon:'cil-settings'},
+    {match:/tài nguyên|resources/i, icon:'cil-folder-open'},
+    {match:/hướng dẫn|guide/i, icon:'cil-lightbulb'},
+    {match:/kho|library|yêu thích/i, icon:'cil-heart'},
+    {match:/hỏi đáp|ticket/i, icon:'cil-speech'},
+    {match:/cài đặt|settings/i, icon:'cil-cog'},
+    {match:/panel/i, icon:'cil-speedometer'},
+  ];
+  function pickIcon(text, href){
+    const s = (text||'') + ' ' + (href||'');
+    for (const n of NAV){ if(n.match.test(s)) return n.icon; }
+    return 'cil-circle';
+  }
+  function iconHTML(name){ return `<i class="${name}" aria-hidden="true"></i>`; }
+
+  // Topnav: strip old jp icons + leading symbols, add CoreUI
+  $$('.topnav a').forEach(a=>{
+    a.querySelectorAll('.jp-ui-icon, .cil-nav-ico').forEach(n=>n.remove());
+    // remove leading decorative symbols from text nodes while keeping label
+    let label = (a.textContent||'').replace(/^[\s⌂◇□✣◈⌁▤▥♡🎫⚙▣◉▶◖◌↑↓←→★☆✦]/u,'').trim();
+    const ic = pickIcon(label, a.getAttribute('href'));
+    a.innerHTML = `<span class="cil-nav-ico">${iconHTML(ic)}</span><span class="nav-label">${label}</span>`;
+  });
+
+  // Sidebar
+  $$('.side-item').forEach(a=>{
+    const icon = a.querySelector('.side-icon');
+    const labelEl = a.querySelector('span:not(.side-icon):not(.chev)');
+    const label = labelEl ? labelEl.textContent : a.textContent;
+    const ic = pickIcon(label, a.getAttribute('href')||a.getAttribute('data-open-settings')||'');
+    if(icon){ icon.innerHTML = iconHTML(ic); }
+  });
+
+  // Category cards
+  $$('.category-grid .cat-card, .cat-card').forEach((a,i)=>{
+    const x = a.querySelector('.cat-icon');
+    if(!x) return;
+    const icons = ['cil-book','cil-notes','cil-task','cil-education','cil-settings','cil-folder-open','cil-lightbulb'];
+    x.innerHTML = iconHTML(icons[i%icons.length]);
+  });
 }
+
 function ensureDonateUI(){
   if(document.getElementById('donateModal')) return;
-  document.body.insertAdjacentHTML('beforeend',`<button class="donate-fab" id="donateOpen" type="button" aria-label="Ủng hộ Thầy"><span class="donate-fab-icon">${jpIcon('cap')}</span><span>Ủng hộ Thầy</span></button><div class="donate-modal" id="donateModal" aria-hidden="true"><div class="donate-box"><button class="donate-close" id="donateClose" type="button" aria-label="Đóng">×</button><div class="donate-kicker">CẢM ƠN BẠN ĐÃ ĐỒNG HÀNH</div><h2>Ủng hộ Thầy Gia Huy duy trì website học tập</h2><p>Nếu website hữu ích với việc học của bạn, một lời ủng hộ nhỏ sẽ giúp thầy có thêm động lực cập nhật bài giảng, tài liệu và duy trì server.</p><div class="donate-grid"><div class="donate-qr-wrap"><div class="donate-qr-frame"><img src="assets/donate-qr.png" alt="QR ủng hộ Thầy"></div><span class="donate-demo">QR demo • thay bằng QR thanh toán thật</span></div><div class="donate-copy"><div class="donate-landmark">${jpIcon('cap')}<span>GV / Gia Huy</span></div><h3>Cảm ơn bạn đã ủng hộ ♡</h3><p>Đặt QR ngân hàng / MoMo / PayPal thật của bạn vào <code>assets/donate-qr.png</code> để dùng ngay mà không cần sửa giao diện.</p><div class="donate-note"><span>✦</span> Một chút ủng hộ • một chặng đường dài</div></div></div></div></div>`);
+  document.body.insertAdjacentHTML('beforeend',`<button class="donate-fab" id="donateOpen" type="button" aria-label="Ủng hộ Thầy"><span class="donate-fab-icon"><i class="cil-education"></i></span><span>Ủng hộ Thầy</span></button><div class="donate-modal" id="donateModal" aria-hidden="true"><div class="donate-box"><button class="donate-close" id="donateClose" type="button" aria-label="Đóng">×</button><div class="donate-kicker">CẢM ƠN BẠN ĐÃ ĐỒNG HÀNH</div><h2>Ủng hộ Thầy Gia Huy duy trì website học tập</h2><p>Nếu website hữu ích với việc học của bạn, một lời ủng hộ nhỏ sẽ giúp thầy có thêm động lực cập nhật bài giảng, tài liệu và duy trì server.</p><div class="donate-grid"><div class="donate-qr-wrap"><div class="donate-qr-frame"><img src="assets/donate-qr.png" alt="QR ủng hộ Thầy"></div><span class="donate-demo">QR demo • thay bằng QR thanh toán thật</span></div><div class="donate-copy"><div class="donate-landmark"><i class="cil-education"></i><span>GV / Gia Huy</span></div><h3>Cảm ơn bạn đã ủng hộ ♡</h3><p>Đặt QR ngân hàng / MoMo / PayPal thật của bạn vào <code>assets/donate-qr.png</code> để dùng ngay mà không cần sửa giao diện.</p><div class="donate-note"><span>✦</span> Một chút ủng hộ • một chặng đường dài</div></div></div></div></div>`);
   $('#donateOpen').addEventListener('click',()=>{$('#donateModal').classList.add('open');$('#donateModal').setAttribute('aria-hidden','false')});
   $('#donateClose').addEventListener('click',closeDonate);
   $('#donateModal').addEventListener('click',e=>{if(e.target.id==='donateModal')closeDonate()});
@@ -64,12 +106,12 @@ function detailOf(id){blobOf(id).then(async x=>{if(!x)return;let m=document.getE
 addEventListener('click',e=>{const id=e.target.closest?.('[data-open-id]')?.dataset.openId;if(id){e.preventDefault();downloadFile(isNaN(id)?id:Number(id))}const f=e.target.closest?.('[data-fav-id]');if(f){e.preventDefault();toggleFav(isNaN(f.dataset.favId)?f.dataset.favId:Number(f.dataset.favId))}const d=e.target.closest?.('[data-detail-id]');if(d){e.preventDefault();detailOf(isNaN(d.dataset.detailId)?d.dataset.detailId:Number(d.dataset.detailId))}const lk=e.target.closest?.('[data-like-id]');if(lk){e.preventDefault();toggleLike(isNaN(lk.dataset.likeId)?lk.dataset.likeId:Number(lk.dataset.likeId),lk)}});
 async function renderCatalog(){const root=$('#catalogRoot');if(!root)return;const cat=root.dataset.cat;const title=CATS[cat]||'Tài nguyên';$('#catTitle').textContent=title;$('#catDesc').textContent='Danh sách '+title.toLowerCase()+' được Thầy Gia Huy tổng hợp và cập nhật. Lọc, sắp xếp và lưu vào kho tài liệu cá nhân.';let items=(await getAll('files')).filter(x=>x.cat===cat);const search=($('#catalogSearch')?.value||'').trim().toLowerCase();const sort=$('#catalogSort')?.value||'new';const onlyFav=$('#onlyFav')?.checked;if(search)items=items.filter(x=>[x.name,x.desc,x.fileName].join(' ').toLowerCase().includes(search));if(onlyFav)items=items.filter(x=>isFav(x.id));items.sort((a,b)=>sort==='name'?a.name.localeCompare(b.name,'vi'):sort==='downloads'?downloadCount(b.id)-downloadCount(a.id):(b.created||0)-(a.created||0));$('#catCount').textContent=`${items.length} mục${onlyFav?' • yêu thích':''}`;const list=$('#catalogList');list.innerHTML=items.length?items.map(card).join(''):'<div class="empty-state"><b>Không có kết quả phù hợp.</b><br><small>Thử đổi từ khóa hoặc bỏ bộ lọc yêu thích.</small></div>';const hash=location.hash.replace('#resource-','');if(hash){const el=document.getElementById('resource-'+CSS.escape(decodeURIComponent(hash)));el?.scrollIntoView({behavior:'smooth',block:'center'})}}
 $('#catalogSearch')?.addEventListener('input',()=>renderCatalog());$('#catalogSort')?.addEventListener('change',()=>renderCatalog());$('#onlyFav')?.addEventListener('change',()=>renderCatalog());$('#refreshCatalog')?.addEventListener('click',()=>renderCatalog());
-function enterAdminPanel(){const f=$('#adminForm'),l=$('#adminLoader'),p=$('#adminPanel');f?.classList.add('hidden');p?.classList.add('hidden');l?.classList.remove('hidden');const bar=$('#adminLoaderBar');if(bar){bar.style.transition='none';bar.style.width='0%';requestAnimationFrame(()=>{bar.style.transition='width .78s cubic-bezier(.2,.7,.3,1)';bar.style.width='100%'})}setTimeout(()=>{l?.classList.add('hidden');p?.classList.remove('hidden');p?.classList.add('panel-enter');renderAdmin('upload');setTimeout(()=>p?.classList.remove('panel-enter'),420)},850)}
-async function openAdmin(){const m=$('#adminModal');m?.classList.add('open');const admin=localStorage.getItem('giahuy-admin')==='1';if(admin){enterAdminPanel()}else{$('#adminForm')?.classList.remove('hidden');$('#adminPanel')?.classList.add('hidden');$('#adminLoader')?.classList.add('hidden')}}
+window.enterAdminPanel = function enterAdminPanel(){const f=$('#adminForm'),l=$('#adminLoader'),p=$('#adminPanel');f?.classList.add('hidden');p?.classList.add('hidden');l?.classList.remove('hidden');const bar=$('#adminLoaderBar');if(bar){bar.style.transition='none';bar.style.width='0%';requestAnimationFrame(()=>{bar.style.transition='width .78s cubic-bezier(.2,.7,.3,1)';bar.style.width='100%'})}setTimeout(()=>{l?.classList.add('hidden');p?.classList.remove('hidden');p?.classList.add('panel-enter');renderAdmin('upload');setTimeout(()=>p?.classList.remove('panel-enter'),420)},850)}
+window.openAdmin = async function openAdmin(){const m=$('#adminModal');m?.classList.add('open');const admin=localStorage.getItem('giahuy-admin')==='1';if(admin){enterAdminPanel()}else{$('#adminForm')?.classList.remove('hidden');$('#adminPanel')?.classList.add('hidden');$('#adminLoader')?.classList.add('hidden')}}
 $('#adminForm')?.addEventListener('submit',e=>{e.preventDefault();if($('#adminPassword').value!=='giahuy-admin'){notify('Mật khẩu Admin không đúng.','error');return}localStorage.setItem('giahuy-admin','1');notify('Đăng nhập quản trị thành công.');enterAdminPanel()});
 $('#logoutAdmin')?.addEventListener('click',()=>{localStorage.removeItem('giahuy-admin');$('#adminPanel')?.classList.add('hidden');$('#adminLoader')?.classList.add('hidden');$('#adminForm')?.classList.remove('hidden');notify('Đã đăng xuất.')});
 $('#changeAvatarBtn')?.addEventListener('click',()=>$('#avatarInput')?.click());$('#avatarInput')?.addEventListener('change',e=>{const f=e.target.files?.[0];if(!f)return;if(f.size>8*1024*1024){notify('Avatar tối đa 8MB.','error');return}const r=new FileReader();r.onload=()=>{localStorage.setItem('giahuy-avatar',r.result);avatarSet(r.result);notify('Đã đổi avatar.')} ;r.readAsDataURL(f)});$('#resetAvatarBtn')?.addEventListener('click',()=>{localStorage.removeItem('giahuy-avatar');avatarSet(avatarDefault);notify('Đã khôi phục avatar mặc định.')});
-async function renderAdmin(tab){const w=$('#adminWorkspace');if(!w)return;const files=await getAll('files'),mus=await getAll('music');$$('.admin-tab').forEach(b=>b.classList.toggle('active',b.dataset.adminTab===tab));if(tab==='upload'){w.innerHTML=`<div class="upload-grid"><div class="upload-box"><form class="upload-form" id="uploadResource"><label>Tên hiển thị<input name="name" placeholder="Ví dụ: ThaiCuc 1.0"></label><label>Phân loại<select name="cat">${Object.entries(CATS).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select></label><label>Mô tả<textarea name="desc" placeholder="Mô tả ngắn"></textarea></label><label class="check-line"><input name="featured" type="checkbox"> Đánh dấu tài nguyên nổi bật</label><label class="dropzone"><input name="file" type="file" multiple hidden><strong>Chọn file / kéo thả</strong><span>Jar, zip, rar, png, jpg, pdf, docx, json, txt...</span></label><button class="primary-btn" type="submit">Upload & phân vào list</button><p class="upload-meta">File được lưu vào IndexedDB của trình duyệt này.</p></form></div><div class="library-box"><div class="section-head"><div><h2>Phân loại & nổi bật</h2><p>Upload một lần → tự vào đúng trang + có thể ghim lên trang chủ.</p></div></div><div class="admin-stat-grid">${Object.entries(CATS).map(([k,v])=>`<div class="admin-stat"><b>${files.filter(x=>x.cat===k).length}</b><span>${v}</span></div>`).join('')}</div><div class="admin-tip">Mẹo: đánh dấu <strong>Nổi bật</strong> cho các file quan trọng để website ưu tiên hiển thị chúng.</div></div></div>`;const form=$('#uploadResource'),input=form.querySelector('input[name=file]');form.querySelector('.dropzone').addEventListener('click',()=>input.click());input.addEventListener('change',()=>form.querySelector('.dropzone span').textContent=input.files.length?`${input.files.length} file đã chọn`:'Chưa chọn file');const dz=form.querySelector('.dropzone');['dragenter','dragover'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.add('dragging')}));['dragleave','drop'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.remove('dragging')}));dz.addEventListener('drop',e=>{const dt=new DataTransfer();[...e.dataTransfer.files].forEach(f=>dt.items.add(f));input.files=dt.files;input.dispatchEvent(new Event('change',{bubbles:true}))});form.addEventListener('submit',async e=>{e.preventDefault();const fs=[...input.files];if(!fs.length){notify('Chưa chọn file.','error');return}const fd=new FormData(form);for(const f of fs){await add('files',{name:fs.length===1?(fd.get('name')||f.name.replace(/\.[^.]+$/,'')):f.name.replace(/\.[^.]+$/,''),cat:fd.get('cat'),desc:fd.get('desc'),fileName:f.name,mime:f.type,size:f.size,blob:f,created:Date.now(),builtin:false,featured:fd.get('featured')==='on'})}notify(`Đã upload ${fs.length} file.`);form.reset();renderAdmin('upload');renderCatalog();renderHome()})}
+window.renderAdmin = async function renderAdmin(tab){const w=$('#adminWorkspace');if(!w)return;const files=await getAll('files'),mus=await getAll('music');$$('.admin-tab').forEach(b=>b.classList.toggle('active',b.dataset.adminTab===tab));if(tab==='upload'){w.innerHTML=`<div class="upload-grid"><div class="upload-box"><form class="upload-form" id="uploadResource"><label>Tên hiển thị<input name="name" placeholder="Ví dụ: ThaiCuc 1.0"></label><label>Phân loại<select name="cat">${Object.entries(CATS).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select></label><label>Mô tả<textarea name="desc" placeholder="Mô tả ngắn"></textarea></label><label class="check-line"><input name="featured" type="checkbox"> Đánh dấu tài nguyên nổi bật</label><label class="dropzone"><input name="file" type="file" multiple hidden><strong>Chọn file / kéo thả</strong><span>Jar, zip, rar, png, jpg, pdf, docx, json, txt...</span></label><button class="primary-btn" type="submit">Upload & phân vào list</button><p class="upload-meta">File được lưu vào IndexedDB của trình duyệt này.</p></form></div><div class="library-box"><div class="section-head"><div><h2>Phân loại & nổi bật</h2><p>Upload một lần → tự vào đúng trang + có thể ghim lên trang chủ.</p></div></div><div class="admin-stat-grid">${Object.entries(CATS).map(([k,v])=>`<div class="admin-stat"><b>${files.filter(x=>x.cat===k).length}</b><span>${v}</span></div>`).join('')}</div><div class="admin-tip">Mẹo: đánh dấu <strong>Nổi bật</strong> cho các file quan trọng để website ưu tiên hiển thị chúng.</div></div></div>`;const form=$('#uploadResource'),input=form.querySelector('input[name=file]');form.querySelector('.dropzone').addEventListener('click',()=>input.click());input.addEventListener('change',()=>form.querySelector('.dropzone span').textContent=input.files.length?`${input.files.length} file đã chọn`:'Chưa chọn file');const dz=form.querySelector('.dropzone');['dragenter','dragover'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.add('dragging')}));['dragleave','drop'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.remove('dragging')}));dz.addEventListener('drop',e=>{const dt=new DataTransfer();[...e.dataTransfer.files].forEach(f=>dt.items.add(f));input.files=dt.files;input.dispatchEvent(new Event('change',{bubbles:true}))});form.addEventListener('submit',async e=>{e.preventDefault();const fs=[...input.files];if(!fs.length){notify('Chưa chọn file.','error');return}const fd=new FormData(form);for(const f of fs){await add('files',{name:fs.length===1?(fd.get('name')||f.name.replace(/\.[^.]+$/,'')):f.name.replace(/\.[^.]+$/,''),cat:fd.get('cat'),desc:fd.get('desc'),fileName:f.name,mime:f.type,size:f.size,blob:f,created:Date.now(),builtin:false,featured:fd.get('featured')==='on'})}notify(`Đã upload ${fs.length} file.`);form.reset();renderAdmin('upload');renderCatalog();renderHome()})}
 else if(tab==='library'){w.innerHTML=`<div class="library-box"><div class="filter-row">${Object.entries(CATS).map(([k,v])=>`<button class="filter-btn" data-lib-filter="${k}">${v}</button>`).join('')}<button class="filter-btn" data-lib-filter="featured">★ Nổi bật</button></div><div class="library-list" id="adminLibrary">${files.map(x=>`<div class="library-row"><span class="file-icon">${iconFor(x)}</span><div><b>${esc(x.name)}</b><small>${esc(CATS[x.cat])} • ${esc(x.fileName||'')} • ${fmtSize(x.size)} • ↓${downloadCount(x.id)}</small></div><div class="library-actions"><button data-admin-download="${x.id}">Tải</button>${x.builtin?'':'<button data-admin-delete="'+x.id+'">Xóa</button>'}</div></div>`).join('')}</div></div>`;w.querySelectorAll('[data-lib-filter]').forEach(b=>b.addEventListener('click',()=>{const c=b.dataset.libFilter;w.querySelectorAll('.library-row').forEach(r=>{const txt=r.innerText;r.style.display=c==='featured'?(txt.includes('Nổi bật')?'grid':'none'):(txt.includes(CATS[c])?'grid':'none')})}));w.querySelectorAll('[data-admin-download]').forEach(b=>b.addEventListener('click',()=>downloadFile(isNaN(b.dataset.adminDownload)?b.dataset.adminDownload:Number(b.dataset.adminDownload))));w.querySelectorAll('[data-admin-delete]').forEach(b=>b.addEventListener('click',async()=>{if(confirm('Xóa mục này?')){await del('files',Number(b.dataset.adminDelete));renderAdmin('library');renderCatalog();renderHome()}}))}
 else if(tab==='music'){w.innerHTML=`<div class="upload-box"><form class="upload-form" id="uploadMusic"><label>Tên bài nhạc<input name="name" required placeholder="Tên bài nhạc"></label><label>Nghệ sĩ / ghi chú<input name="artist" placeholder="giahuy music"></label><label class="dropzone"><input name="file" type="file" accept="audio/*" hidden><strong>Chọn file nhạc</strong><span>MP3 / WAV / OGG / M4A...</span></label><button class="primary-btn" type="submit">Thêm vào playlist</button></form></div><div class="library-box music-library"><div class="library-list">${mus.map(x=>`<div class="library-row"><span class="file-icon">♫</span><div><b>${esc(x.name)}</b><small>${esc(x.artist||'giahuy')} • ${fmtSize(x.size)}</small></div><div class="library-actions"><button data-play-admin="${x.id}">Nghe</button><button data-del-music="${x.id}">Xóa</button></div></div>`).join('')||'<div class="empty-state">Chưa có bài nhạc.</div>'}</div></div>`;const form=$('#uploadMusic'),inp=form.querySelector('input[name=file]');form.querySelector('.dropzone').addEventListener('click',()=>inp.click());inp.addEventListener('change',()=>form.querySelector('.dropzone span').textContent=inp.files[0]?.name||'');form.addEventListener('submit',async e=>{e.preventDefault();const f=inp.files?.[0];if(!f){notify('Chưa chọn file nhạc.','error');return}const fd=new FormData(form);await add('music',{name:fd.get('name'),artist:fd.get('artist'),fileName:f.name,mime:f.type,size:f.size,blob:f,created:Date.now()});notify('Đã thêm bài nhạc vào playlist.');renderAdmin('music');renderMusic();renderHome()});w.querySelectorAll('[data-del-music]').forEach(b=>b.addEventListener('click',async()=>{await del('music',Number(b.dataset.delMusic));renderAdmin('music');renderMusic();renderHome()}));w.querySelectorAll('[data-play-admin]').forEach(b=>b.addEventListener('click',()=>playTrack(Number(b.dataset.playAdmin))))}
 else {const totalBytes=files.reduce((a,x)=>a+(x.size||0),0)+mus.reduce((a,x)=>a+(x.size||0),0);const favs=files.filter(x=>isFav(x.id)).length;const downloads=files.reduce((a,x)=>a+downloadCount(x.id),0);w.innerHTML=`<div class="admin-stat-grid"><div class="admin-stat"><b>${files.length}</b><span>Tổng tài nguyên</span></div><div class="admin-stat"><b>${mus.length}</b><span>Bài nhạc</span></div><div class="admin-stat"><b>${downloads}</b><span>Lượt tải</span></div><div class="admin-stat"><b>${fmtSize(totalBytes)}</b><span>Dung lượng</span></div></div><div class="library-box"><h3 class="admin-section-title">Bảng điều khiển</h3><div class="admin-mini-grid">${Object.entries(CATS).map(([k,v])=>`<div class="mini-stat"><span>${esc(v)}</span><b>${files.filter(x=>x.cat===k).length}</b></div>`).join('')}</div><div class="admin-tip">Yêu thích: ${favs} mục • Nổi bật: ${files.filter(x=>x.featured).length} mục • Đăng nhập Admin hiện chỉ bảo vệ giao diện local.<br><br><strong>Mẹo:</strong> dùng banner thông báo bên dưới để đăng trạng thái bảo trì, cập nhật hoặc tin mới.</div><div class="upload-box" style="margin-top:12px"><form id="announceForm" class="upload-form"><label>Thông báo trang chủ<textarea name="text" placeholder="Ví dụ: Đang cập nhật bài giảng mới..."></textarea></label><div class="card-actions"><button class="primary-btn" type="submit">Lưu thông báo</button><button class="secondary-btn" type="button" id="clearAnnouncement">Xóa banner</button></div></form></div></div>`;$('#announceForm').addEventListener('submit',e=>{e.preventDefault();localStorage.setItem('giahuy-announcement',new FormData(e.currentTarget).get('text')||'');applyAnnouncement();notify('Đã cập nhật banner.');});$('#clearAnnouncement').addEventListener('click',()=>{localStorage.removeItem('giahuy-announcement');applyAnnouncement();notify('Đã xóa banner.')})}}
@@ -113,14 +155,14 @@ function updateFakeStats(){const v=$('#liveVisits');if(v)v.textContent=bumpTotal
     <div class="fab-dock-handle" title="Kéo để di chuyển"></div>
     <div class="fab-dock-btns">
       <button type="button" class="fab-btn" data-fab="donate" title="Ủng hộ Thầy">
-        <span class="fab-ico">♡</span><span>Ủng hộ Thầy</span>
+        <span class="fab-ico"><i class="cil-heart"></i></span><span>Ủng hộ Thầy</span>
       </button>
       <button type="button" class="fab-btn primary" data-fab="ticket" title="Đặt câu hỏi">
-        <span class="fab-ico">🎫</span><span>Đặt câu hỏi</span>
+        <span class="fab-ico"><i class="cil-speech"></i></span><span>Đặt câu hỏi</span>
         <span class="fab-count" id="fabTicketCount">0</span>
       </button>
       <button type="button" class="fab-btn mini" data-fab="top" title="Lên đầu trang">
-        <span class="fab-ico">↑</span>
+        <span class="fab-ico"><i class="cil-arrow-top"></i></span>
       </button>
     </div>
   `;
@@ -447,7 +489,7 @@ function updateFakeStats(){const v=$('#liveVisits');if(v)v.textContent=bumpTotal
       a.className = 'side-item';
       a.href = 'teacher.html';
       a.setAttribute('data-role-panel', '1');
-      a.innerHTML = '<span class="side-icon">▣</span><span>Panel ' + (isAdmin ? 'Admin' : 'Giáo viên') + '</span><span class="chev">›</span>';
+      a.innerHTML = '<span class="side-icon"><i class="cil-speedometer"></i></span><span>Panel ' + (isAdmin ? 'Admin' : 'Giáo viên') + '</span><span class="chev">›</span>';
       // insert before quote if any
       const quote = side.querySelector('.side-quote');
       if (quote) side.insertBefore(a, quote);
@@ -561,4 +603,22 @@ function updateFakeStats(){const v=$('#liveVisits');if(v)v.textContent=bumpTotal
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wire);
   else wire();
   setTimeout(wire, 400);
+})();
+
+
+/* V29.1 — reset fab if drifted left */
+(function(){
+  try {
+    const saved = JSON.parse(localStorage.getItem('giahuy-fab-dock-pos')||'null');
+    if (saved && typeof saved.x === 'number' && saved.x < window.innerWidth * 0.45) {
+      localStorage.removeItem('giahuy-fab-dock-pos');
+    }
+  } catch(_){}
+  const dock = document.querySelector('.fab-dock');
+  if (dock && !dock.classList.contains('is-custom-pos')) {
+    dock.style.left = '';
+    dock.style.top = '';
+    dock.style.right = '';
+    dock.style.bottom = '';
+  }
 })();
