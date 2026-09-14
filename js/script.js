@@ -256,9 +256,10 @@ function updateFakeStats(){const v=$('#liveVisits');if(v)v.textContent=bumpTotal
     if (actions && !document.querySelector('.session-pill')) {
       const pill = document.createElement('span');
       pill.className = 'session-pill';
-      const roleLabel = session.role === 'teacher' ? 'GV' : 'HS';
+      const roleLabel = session.role === 'admin' ? 'Admin' : (session.role === 'teacher' ? 'GV' : 'HS');
+      const staff = session.role === 'admin' || session.role === 'teacher';
       pill.innerHTML = `<span>${roleLabel}: ${escapeText(session.username || '')}</span>` +
-        (session.role === 'teacher' ? ` <a href="teacher.html" style="color:#1a4f8c;font-weight:700">Panel</a>` : '') +
+        (staff ? ` <a href="teacher.html" style="color:#1a4f8c;font-weight:700">Panel</a>` : '') +
         ` <button type="button" id="sessionLogout">Thoát</button>`;
       actions.insertBefore(pill, actions.firstChild);
       document.getElementById('sessionLogout')?.addEventListener('click', () => Auth.logout());

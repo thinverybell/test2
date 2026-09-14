@@ -14,6 +14,12 @@
 </head>
 <body class="auth-page">
   <div class="auth-bg-layer" aria-hidden="true"></div>
+
+  <!-- Corner admin icon -->
+  <a class="admin-corner" href="admin-login.html" title="Đăng nhập quản trị viên">
+    <span class="admin-corner-ico">⚙</span>
+  </a>
+
   <div class="auth-wrap">
     <div class="auth-card">
       <div class="auth-tabs" role="tablist">
@@ -25,19 +31,23 @@
         <form class="auth-panel active" id="studentForm" data-panel="student" autocomplete="on">
           <label class="auth-field">
             <span>Tên đăng nhập</span>
-            <input type="text" name="username" id="stuUser" placeholder="Tên đăng nhập" required maxlength="40">
+            <input type="text" id="stuUser" placeholder="Tên đăng nhập" required maxlength="40">
           </label>
           <label class="auth-field">
             <span>Mã mời của học sinh</span>
-            <input type="text" name="invite" id="stuInvite" placeholder="Mã mời của học sinh" required maxlength="40">
+            <input type="text" id="stuInvite" placeholder="Mã mời của học sinh" required maxlength="40">
           </label>
           <button type="submit" class="auth-submit">Đăng nhập học sinh</button>
         </form>
 
         <form class="auth-panel" id="teacherForm" data-panel="teacher" autocomplete="on">
           <label class="auth-field">
-            <span>Mật khẩu của giáo viên</span>
-            <input type="password" name="password" id="teaPass" placeholder="Mật khẩu của giáo viên" required>
+            <span>Tên đăng nhập giáo viên</span>
+            <input type="text" id="teaUser" placeholder="Tên đăng nhập giáo viên" required maxlength="40">
+          </label>
+          <label class="auth-field">
+            <span>Mã mời của giáo viên</span>
+            <input type="text" id="teaInvite" placeholder="Mã mời của giáo viên" required maxlength="40">
           </label>
           <button type="submit" class="auth-submit">Đăng nhập giáo viên</button>
         </form>
@@ -66,14 +76,18 @@
 
     (function(){
       const s = Auth.getSession();
-      if (s) location.replace(s.role === 'teacher' ? 'teacher.html' : 'index.html');
+      if (s) {
+        if (s.role === 'admin' || s.role === 'teacher') location.replace('teacher.html');
+        else location.replace('index.html');
+      }
     })();
 
     document.getElementById('studentForm').addEventListener('submit', e => {
       e.preventDefault();
-      const u = document.getElementById('stuUser').value.trim();
-      const inv = document.getElementById('stuInvite').value.trim();
-      const r = Auth.loginStudent(u, inv);
+      const r = Auth.loginStudent(
+        document.getElementById('stuUser').value,
+        document.getElementById('stuInvite').value
+      );
       if (!r.ok) return Auth.toast(r.msg, true);
       Auth.toast('Đăng nhập học sinh thành công');
       setTimeout(() => location.href = 'index.html', 400);
@@ -81,15 +95,17 @@
 
     document.getElementById('teacherForm').addEventListener('submit', e => {
       e.preventDefault();
-      const p = document.getElementById('teaPass').value;
-      const r = Auth.loginTeacher(p);
+      const r = Auth.loginTeacher(
+        document.getElementById('teaUser').value,
+        document.getElementById('teaInvite').value
+      );
       if (!r.ok) return Auth.toast(r.msg, true);
       Auth.toast('Đăng nhập giáo viên thành công');
       setTimeout(() => location.href = 'teacher.html', 400);
     });
 
     document.getElementById('forgotBtn').addEventListener('click', () => {
-      Auth.toast('Vui lòng liên hệ giáo viên hoặc dùng Hỏi đáp sau khi đăng nhập.');
+      Auth.toast('Vui lòng liên hệ quản trị viên hoặc giáo viên.');
     });
   </script>
 </body>

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Đăng nhập quản trị viên — Thầy Gia Huy</title>
+<link rel="icon" href="assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/auth.css">
+</head>
+<body class="auth-page">
+  <div class="auth-bg-layer" aria-hidden="true"></div>
+  <a class="admin-corner" href="login.html" title="Về đăng nhập chính">←</a>
+
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="auth-admin-head">
+        <div class="auth-admin-ico">⚙</div>
+        <h1>Đăng nhập tài khoản của quản trị viên</h1>
+        <p>Chỉ dành cho quản trị hệ thống</p>
+      </div>
+      <div class="auth-panels" style="padding-top:8px">
+        <form class="auth-panel active" id="adminForm" autocomplete="on">
+          <label class="auth-field">
+            <span>Mật khẩu quản trị viên</span>
+            <input type="password" id="adminPass" placeholder="Mật khẩu quản trị viên" required>
+          </label>
+          <button type="submit" class="auth-submit">Đăng nhập quản trị viên</button>
+        </form>
+      </div>
+      <a class="auth-forgot" href="login.html" style="text-decoration:none;display:block;text-align:center">← Về trang đăng nhập chính</a>
+    </div>
+  </div>
+
+  <div class="auth-toast" id="authToast" hidden></div>
+  <script src="js/auth.js"></script>
+  <script>
+    (function(){
+      const s = Auth.getSession();
+      if (s && (s.role === 'admin' || s.role === 'teacher')) location.replace('teacher.html');
+    })();
+    document.getElementById('adminForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const r = Auth.loginAdmin(document.getElementById('adminPass').value);
+      if (!r.ok) return Auth.toast(r.msg, true);
+      Auth.toast('Đăng nhập quản trị thành công');
+      setTimeout(() => location.href = 'teacher.html', 400);
+    });
+  </script>
+</body>
+</html>
