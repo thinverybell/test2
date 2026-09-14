@@ -53,8 +53,6 @@
           <button type="submit" class="auth-submit">Đăng nhập giáo viên</button>
         </form>
       </div>
-
-      <button type="button" class="auth-forgot" id="forgotBtn">nhấn vô đây để tạo ticket nếu quên mật khẩu</button>
     </div>
   </div>
 
@@ -103,10 +101,6 @@
       if (!r.ok) return Auth.toast(r.msg, true);
       Auth.toast('Đăng nhập giáo viên thành công');
       setTimeout(() => location.href = 'teacher.html', 400);
-    });
-
-    document.getElementById('forgotBtn').addEventListener('click', () => {
-      Auth.toast('Vui lòng liên hệ quản trị viên hoặc giáo viên.');
     });
   </script>
 </body>
