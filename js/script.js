@@ -373,3 +373,155 @@ function updateFakeStats(){const v=$('#liveVisits');if(v)v.textContent=bumpTotal
   else init();
   setTimeout(init, 500);
 })();
+
+/* V28 — Role-based navigation + staff panel access */
+(function () {
+  function role() {
+    try {
+      const s = JSON.parse(localStorage.getItem('giahuy-session') || 'null');
+      return (s && s.role) || 'guest';
+    } catch { return 'guest'; }
+  }
+
+  // Student-visible pages (and teacher/admin also see these)
+  const STUDENT_HREFS = [
+    'index.html', 'plugins.html', 'mods.html', 'assets.html',
+    'tools.html', 'resources.html', 'guide.html', 'my-library.html', '#'
+  ];
+  // Hidden from students
+  const STAFF_ONLY = ['config.html', 'teacher.html'];
+  const SETTINGS_SELECTORS = [
+    '.settings-side-link', '[data-open-settings]', '#adminOpen',
+    '.settings-label', '.settings-trigger'
+  ];
+
+  function hrefKey(a) {
+    const h = (a.getAttribute('href') || '').split('?')[0].split('#')[0];
+    return h || '#';
+  }
+
+  function applyNav() {
+    const r = role();
+    const isStaff = r === 'admin' || r === 'teacher';
+    const isAdmin = r === 'admin';
+
+    // Sidebar + topnav links
+    document.querySelectorAll('.side-item, .topnav > a').forEach(a => {
+      const h = hrefKey(a);
+      const isTicket = a.hasAttribute('data-open-ticket-nav') || /ticket|hỏi đáp/i.test(a.textContent || '');
+      const isSettings = a.classList.contains('settings-side-link') || a.hasAttribute('data-open-settings');
+      const isConfig = h === 'config.html';
+
+      if (r === 'student' || r === 'guest') {
+        if (isSettings || isConfig || h === 'teacher.html') {
+          a.style.display = 'none';
+        } else {
+          a.style.display = '';
+        }
+      } else if (r === 'teacher') {
+        // teachers: no config (giáo án) optional - user said teacher has same as student + panel
+        // hide config and settings gear; panel is separate page
+        if (isSettings || isConfig) a.style.display = 'none';
+        else a.style.display = '';
+      } else {
+        // admin: show all
+        a.style.display = '';
+      }
+    });
+
+    // Topbar settings button/label
+    SETTINGS_SELECTORS.forEach(sel => {
+      document.querySelectorAll(sel).forEach(el => {
+        if (isAdmin) {
+          el.style.display = '';
+        } else {
+          el.style.display = 'none';
+        }
+      });
+    });
+
+    // Ensure panel link exists for staff in sidebar
+    const side = document.querySelector('.side-inner');
+    if (side && isStaff && !side.querySelector('[data-role-panel]')) {
+      const a = document.createElement('a');
+      a.className = 'side-item';
+      a.href = 'teacher.html';
+      a.setAttribute('data-role-panel', '1');
+      a.innerHTML = '<span class="side-icon">▣</span><span>Panel ' + (isAdmin ? 'Admin' : 'Giáo viên') + '</span><span class="chev">›</span>';
+      // insert before quote if any
+      const quote = side.querySelector('.side-quote');
+      if (quote) side.insertBefore(a, quote);
+      else side.appendChild(a);
+    }
+  }
+
+  // Staff open admin tools without password; restrict tabs for teacher
+  function patchAdminAccess() {
+    const r = role();
+    if (r !== 'admin' && r !== 'teacher') return;
+
+    // Auto mark admin flag so openAdmin skips password for staff session
+    localStorage.setItem('giahuy-admin', '1');
+
+    // When admin panel opens, hide tabs teachers shouldn't see
+    const obs = new MutationObserver(() => {
+      const panel = document.getElementById('adminPanel');
+      if (!panel || panel.classList.contains('hidden')) return;
+      const tabs = panel.querySelectorAll('.admin-tab');
+      tabs.forEach(tab => {
+        const t = tab.dataset.adminTab;
+        if (r === 'teacher') {
+          // only upload, library, stats
+          if (t === 'music') tab.style.display = 'none';
+          else tab.style.display = '';
+        } else {
+          tab.style.display = '';
+        }
+      });
+      // hide avatar change for teacher
+      if (r === 'teacher') {
+        panel.querySelectorAll('#changeAvatarBtn, #resetAvatarBtn, .admin-actions #logoutAdmin').forEach(el => {
+          if (el && el.id !== 'logoutAdmin') el.style.display = 'none';
+        });
+        const badge = panel.querySelector('.admin-badge');
+        if (badge) badge.textContent = 'GIÁO VIÊN';
+      }
+    });
+    const modal = document.getElementById('adminModal');
+    if (modal) obs.observe(modal, { attributes: true, subtree: true, childList: true, attributeFilter: ['class'] });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => { applyNav(); patchAdminAccess(); });
+  } else {
+    applyNav();
+    patchAdminAccess();
+  }
+  setTimeout(() => { applyNav(); patchAdminAccess(); }, 400);
+})();
+
+/* V28.1 — open admin panel from hash / localStorage tab */
+(function(){
+  function tryOpen(){
+    const hash = location.hash || '';
+    const tab = localStorage.getItem('giahuy-open-admin-tab');
+    if (!hash.startsWith('#admin') && !tab) return;
+    const role = (()=>{ try{return JSON.parse(localStorage.getItem('giahuy-session')||'{}').role}catch{return null}})();
+    if (role !== 'admin' && role !== 'teacher') return;
+    localStorage.setItem('giahuy-admin','1');
+    const open = () => {
+      if (typeof openAdmin === 'function') openAdmin();
+      else document.getElementById('adminOpen')?.click();
+      setTimeout(() => {
+        const want = tab || (hash.replace('#admin-','') || 'upload');
+        const btn = document.querySelector(`.admin-tab[data-admin-tab="${want}"]`);
+        if (btn) btn.click();
+        else if (typeof renderAdmin === 'function') renderAdmin(want);
+        localStorage.removeItem('giahuy-open-admin-tab');
+      }, 900);
+    };
+    setTimeout(open, 500);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', tryOpen);
+  else tryOpen();
+})();

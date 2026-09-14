@@ -3095,3 +3095,53 @@ body.has-fab-dock .back-top {
   cursor: grab !important;
   margin-left: auto !important;
 }
+
+/* Brand logo image */
+.topbar .brand {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  flex-shrink: 0 !important;
+  text-decoration: none !important;
+  line-height: 0 !important;
+}
+.topbar .brand-logo {
+  height: 48px !important;
+  width: auto !important;
+  max-width: 160px !important;
+  object-fit: contain !important;
+  display: block !important;
+  filter: drop-shadow(0 1px 2px rgba(15, 39, 68, 0.08));
+}
+.topbar .brand-mark,
+.topbar .brand-word {
+  display: none !important;
+}
+@media (max-width: 700px) {
+  .topbar .brand-logo {
+    height: 40px !important;
+    max-width: 120px !important;
+  }
+}
+
+/* Brand logo — larger for legibility */
+.topbar {
+  min-height: 64px !important;
+  align-items: center !important;
+}
+.topbar .brand-logo {
+  height: 58px !important;
+  max-width: 180px !important;
+  width: auto !important;
+  object-fit: contain !important;
+}
+@media (max-width: 700px) {
+  .topbar .brand-logo {
+    height: 46px !important;
+    max-width: 140px !important;
+  }
+}

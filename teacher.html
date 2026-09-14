@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Panel quản trị — Thầy Gia Huy</title>
+<title>Panel — Thầy Gia Huy</title>
 <link rel="icon" href="assets/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,8 +15,8 @@
     <div class="brand-row">
       <span class="auth-mark">GH</span>
       <div>
-        <h1>Panel quản trị</h1>
-        <small style="color:#5a7390;font-size:11px" id="roleLabel">Quản lý tài khoản & website</small>
+        <h1 id="panelTitle">Panel</h1>
+        <small style="color:#5a7390;font-size:11px" id="roleLabel">—</small>
       </div>
     </div>
     <div class="top-actions">
@@ -30,14 +30,26 @@
       <div class="t-stats">
         <div class="t-stat"><b id="statStudents">0</b><span>Học sinh</span></div>
         <div class="t-stat"><b id="statTeachers">0</b><span>Giáo viên</span></div>
-        <div class="t-stat"><b id="statRole">—</b><span>Vai trò hiện tại</span></div>
+        <div class="t-stat"><b id="statRole">—</b><span>Vai trò</span></div>
       </div>
     </section>
 
-    <!-- Students -->
+    <!-- Staff tools -->
+    <section class="t-card">
+      <h2>Công cụ panel</h2>
+      <p class="sub" id="toolsHint">Các chức năng quản lý nội dung.</p>
+      <div class="t-form" style="flex-wrap:wrap" id="toolBtns">
+        <a class="t-btn primary" href="index.html#open-admin-upload" data-admin-tab="upload">⬆ Upload</a>
+        <a class="t-btn primary" href="index.html#open-admin-library" data-admin-tab="library">📚 Thư viện</a>
+        <a class="t-btn primary" href="index.html#open-admin-stats" data-admin-tab="stats">📊 Thống kê</a>
+        <a class="t-btn primary" href="index.html#open-admin-music" data-admin-tab="music" id="btnMusic" hidden>🎵 Nhạc</a>
+        <a class="t-btn" href="index.html#open-admin-full" id="btnFullSettings" hidden>⚙ Toàn bộ Cài đặt</a>
+      </div>
+    </section>
+
     <section class="t-card">
       <h2>Tạo tài khoản học sinh</h2>
-      <p class="sub">Tên đăng nhập + mã mời tự sinh. Gửi cho học sinh để đăng nhập ở trang chính.</p>
+      <p class="sub">Tên + mã mời. Học sinh đăng nhập tab Học sinh trên trang login.</p>
       <form class="t-form" id="createStudentForm">
         <input type="text" id="newStudent" placeholder="Tên đăng nhập học sinh" maxlength="40" required>
         <button type="submit" class="t-btn primary">+ Tạo học sinh</button>
@@ -49,18 +61,15 @@
       <h2>Danh sách học sinh</h2>
       <div class="t-table-wrap">
         <table class="t-table">
-          <thead>
-            <tr><th>Tên đăng nhập</th><th>Mã mời</th><th>Ngày tạo</th><th>Thao tác</th></tr>
-          </thead>
+          <thead><tr><th>Tên</th><th>Mã mời</th><th>Ngày tạo</th><th>Thao tác</th></tr></thead>
           <tbody id="studentBody"></tbody>
         </table>
       </div>
     </section>
 
-    <!-- Teachers (admin only UI still shown to teachers who manage?) -->
-    <section class="t-card" id="teacherSection">
+    <section class="t-card" id="teacherCreateSection">
       <h2>Tạo tài khoản giáo viên</h2>
-      <p class="sub">Tên đăng nhập + mã mời giáo viên. Giáo viên đăng nhập tab “Giáo viên” trên trang login chính.</p>
+      <p class="sub">Chỉ quản trị viên. Giáo viên đăng nhập tab Giáo viên (tên + mã mời).</p>
       <form class="t-form" id="createTeacherForm">
         <input type="text" id="newTeacher" placeholder="Tên đăng nhập giáo viên" maxlength="40" required>
         <button type="submit" class="t-btn primary">+ Tạo giáo viên</button>
@@ -72,18 +81,10 @@
       <h2>Danh sách giáo viên</h2>
       <div class="t-table-wrap">
         <table class="t-table">
-          <thead>
-            <tr><th>Tên đăng nhập</th><th>Mã mời</th><th>Ngày tạo</th><th>Thao tác</th></tr>
-          </thead>
+          <thead><tr><th>Tên</th><th>Mã mời</th><th>Ngày tạo</th><th>Thao tác</th></tr></thead>
           <tbody id="teacherBody"></tbody>
         </table>
       </div>
-    </section>
-
-    <section class="t-card">
-      <h2>Quản trị website</h2>
-      <p class="sub">Mở trang chủ để upload bài giảng, học liệu, nhạc… (nút Cài đặt).</p>
-      <a class="t-btn primary" href="index.html">Mở website & quản trị nội dung →</a>
     </section>
   </main>
 
@@ -92,109 +93,89 @@
   <script>
     const session = Auth.requireAuth({ staffOnly: true });
     if (!session) throw new Error('redirect');
+    const isAdmin = session.role === 'admin';
 
-    document.getElementById('roleLabel').textContent =
-      session.role === 'admin' ? 'Quản trị viên' : ('Giáo viên: ' + (session.username || ''));
-    document.getElementById('statRole').textContent =
-      session.role === 'admin' ? 'Admin' : 'GV';
+    document.getElementById('panelTitle').textContent = isAdmin ? 'Panel Quản trị viên' : 'Panel Giáo viên';
+    document.getElementById('roleLabel').textContent = isAdmin ? 'Toàn quyền cài đặt website' : 'Upload · Thư viện · Thống kê';
+    document.getElementById('statRole').textContent = isAdmin ? 'Admin' : 'GV';
+    document.getElementById('toolsHint').textContent = isAdmin
+      ? 'Đầy đủ chức năng Cài đặt: Upload, Thư viện, Nhạc, Thống kê, avatar…'
+      : 'Chỉ Upload, Thư viện và Thống kê (không cần nhập mật khẩu).';
+
+    if (isAdmin) {
+      document.getElementById('btnMusic').hidden = false;
+      document.getElementById('btnFullSettings').hidden = false;
+    } else {
+      document.getElementById('teacherCreateSection').style.display = 'none';
+      document.getElementById('teacherListSection').style.display = 'none';
+    }
 
     document.getElementById('logoutBtn').addEventListener('click', () => Auth.logout());
 
-    function fmtDate(ts) {
-      try { return new Date(ts).toLocaleString('vi-VN'); } catch { return '—'; }
-    }
-    function escapeHtml(str) {
-      return String(str||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-    }
-
-    function renderTable(kind) {
-      const list = (kind === 'teacher' ? Auth.getTeachers() : Auth.getStudents())
-        .slice().sort((a,b) => (b.created||0)-(a.created||0));
-      if (kind === 'teacher') document.getElementById('statTeachers').textContent = list.length;
-      else document.getElementById('statStudents').textContent = list.length;
-
-      const body = document.getElementById(kind === 'teacher' ? 'teacherBody' : 'studentBody');
-      if (!list.length) {
-        body.innerHTML = '<tr><td colspan="4" class="t-empty">Chưa có tài khoản nào.</td></tr>';
-        return;
-      }
-      body.innerHTML = list.map(s => `
-        <tr data-id="${s.id}" data-kind="${kind}">
-          <td><strong>${escapeHtml(s.username)}</strong></td>
-          <td><span class="code">${escapeHtml(s.inviteCode)}</span></td>
-          <td>${fmtDate(s.created)}</td>
-          <td class="actions">
-            <button type="button" class="t-btn" data-act="copy" data-user="${escapeHtml(s.username)}" data-code="${escapeHtml(s.inviteCode)}">Sao chép</button>
-            <button type="button" class="t-btn" data-act="reset">Đổi mã mời</button>
-            <button type="button" class="t-btn danger" data-act="del">Xóa</button>
-          </td>
-        </tr>
-      `).join('');
-    }
-
-    function renderAll() {
-      renderTable('student');
-      renderTable('teacher');
-    }
-
-    document.getElementById('createStudentForm').addEventListener('submit', e => {
+    // Open admin tools on homepage via hash
+    document.querySelectorAll('[data-admin-tab]').forEach(a => {
+      a.addEventListener('click', e => {
+        e.preventDefault();
+        const tab = a.dataset.adminTab;
+        localStorage.setItem('giahuy-admin', '1');
+        localStorage.setItem('giahuy-open-admin-tab', tab || 'upload');
+        location.href = 'index.html#admin-' + (tab || 'upload');
+      });
+    });
+    document.getElementById('btnFullSettings')?.addEventListener('click', e => {
       e.preventDefault();
-      const r = Auth.createAccount('student', document.getElementById('newStudent').value);
-      const out = document.getElementById('stuResult');
-      out.hidden = false;
-      if (!r.ok) {
-        out.style.color = '#9b2c2c';
-        out.textContent = r.msg;
-        Auth.toast(r.msg, true);
-        return;
-      }
-      out.style.color = '#0d3a6e';
-      out.innerHTML = `Đã tạo HS: <strong>${escapeHtml(r.account.username)}</strong> — mã <span class="code">${escapeHtml(r.account.inviteCode)}</span>`;
-      document.getElementById('newStudent').value = '';
-      Auth.toast('Đã tạo tài khoản học sinh');
-      renderAll();
+      localStorage.setItem('giahuy-admin', '1');
+      localStorage.setItem('giahuy-open-admin-tab', 'upload');
+      location.href = 'index.html#admin-upload';
     });
 
-    document.getElementById('createTeacherForm').addEventListener('submit', e => {
+    function fmtDate(ts){ try{return new Date(ts).toLocaleString('vi-VN')}catch{return '—'} }
+    function escapeHtml(str){return String(str||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+
+    function renderTable(kind){
+      const list=(kind==='teacher'?Auth.getTeachers():Auth.getStudents()).slice().sort((a,b)=>(b.created||0)-(a.created||0));
+      if(kind==='teacher') document.getElementById('statTeachers').textContent=list.length;
+      else document.getElementById('statStudents').textContent=list.length;
+      const body=document.getElementById(kind==='teacher'?'teacherBody':'studentBody');
+      if(!list.length){body.innerHTML='<tr><td colspan="4" class="t-empty">Chưa có tài khoản.</td></tr>';return}
+      body.innerHTML=list.map(s=>`<tr data-id="${s.id}" data-kind="${kind}">
+        <td><strong>${escapeHtml(s.username)}</strong></td>
+        <td><span class="code">${escapeHtml(s.inviteCode)}</span></td>
+        <td>${fmtDate(s.created)}</td>
+        <td class="actions">
+          <button type="button" class="t-btn" data-act="copy" data-user="${escapeHtml(s.username)}" data-code="${escapeHtml(s.inviteCode)}">Sao chép</button>
+          <button type="button" class="t-btn" data-act="reset">Đổi mã</button>
+          <button type="button" class="t-btn danger" data-act="del">Xóa</button>
+        </td></tr>`).join('');
+    }
+    function renderAll(){renderTable('student');renderTable('teacher')}
+
+    document.getElementById('createStudentForm').addEventListener('submit',e=>{
       e.preventDefault();
-      const r = Auth.createAccount('teacher', document.getElementById('newTeacher').value);
-      const out = document.getElementById('teaResult');
-      out.hidden = false;
-      if (!r.ok) {
-        out.style.color = '#9b2c2c';
-        out.textContent = r.msg;
-        Auth.toast(r.msg, true);
-        return;
-      }
-      out.style.color = '#0d3a6e';
-      out.innerHTML = `Đã tạo GV: <strong>${escapeHtml(r.account.username)}</strong> — mã <span class="code">${escapeHtml(r.account.inviteCode)}</span>`;
-      document.getElementById('newTeacher').value = '';
-      Auth.toast('Đã tạo tài khoản giáo viên');
-      renderAll();
+      const r=Auth.createAccount('student',document.getElementById('newStudent').value);
+      const out=document.getElementById('stuResult'); out.hidden=false;
+      if(!r.ok){out.style.color='#9b2c2c';out.textContent=r.msg;Auth.toast(r.msg,true);return}
+      out.style.color='#0d3a6e';
+      out.innerHTML=`HS: <strong>${escapeHtml(r.account.username)}</strong> — <span class="code">${escapeHtml(r.account.inviteCode)}</span>`;
+      document.getElementById('newStudent').value=''; Auth.toast('Đã tạo học sinh'); renderAll();
     });
-
-    document.body.addEventListener('click', e => {
-      const btn = e.target.closest('[data-act]');
-      if (!btn) return;
-      const tr = btn.closest('tr');
-      const id = tr && tr.dataset.id;
-      const kind = tr && tr.dataset.kind;
-      const act = btn.dataset.act;
-      if (act === 'copy') {
-        const text = `Tên: ${btn.dataset.user}\nMã mời: ${btn.dataset.code}`;
-        navigator.clipboard?.writeText(text).then(() => Auth.toast('Đã sao chép')).catch(() => Auth.toast(text));
-      } else if (act === 'reset' && id) {
-        if (!confirm('Tạo mã mời mới?')) return;
-        const r = Auth.resetInvite(kind, id);
-        if (r.ok) { Auth.toast('Mã mới: ' + r.account.inviteCode); renderAll(); }
-      } else if (act === 'del' && id) {
-        if (!confirm('Xóa tài khoản này?')) return;
-        Auth.deleteAccount(kind, id);
-        Auth.toast('Đã xóa');
-        renderAll();
-      }
+    document.getElementById('createTeacherForm').addEventListener('submit',e=>{
+      e.preventDefault();
+      if(!isAdmin) return Auth.toast('Chỉ admin được tạo giáo viên', true);
+      const r=Auth.createAccount('teacher',document.getElementById('newTeacher').value);
+      const out=document.getElementById('teaResult'); out.hidden=false;
+      if(!r.ok){out.style.color='#9b2c2c';out.textContent=r.msg;Auth.toast(r.msg,true);return}
+      out.style.color='#0d3a6e';
+      out.innerHTML=`GV: <strong>${escapeHtml(r.account.username)}</strong> — <span class="code">${escapeHtml(r.account.inviteCode)}</span>`;
+      document.getElementById('newTeacher').value=''; Auth.toast('Đã tạo giáo viên'); renderAll();
     });
-
+    document.body.addEventListener('click',e=>{
+      const btn=e.target.closest('[data-act]'); if(!btn) return;
+      const tr=btn.closest('tr'); const id=tr?.dataset.id; const kind=tr?.dataset.kind; const act=btn.dataset.act;
+      if(act==='copy'){const t=`Tên: ${btn.dataset.user}\nMã mời: ${btn.dataset.code}`;navigator.clipboard?.writeText(t).then(()=>Auth.toast('Đã sao chép')).catch(()=>Auth.toast(t))}
+      else if(act==='reset'&&id){if(!confirm('Đổi mã mời?'))return;const r=Auth.resetInvite(kind,id);if(r.ok){Auth.toast('Mã mới: '+r.account.inviteCode);renderAll()}}
+      else if(act==='del'&&id){if(!confirm('Xóa tài khoản?'))return;Auth.deleteAccount(kind,id);Auth.toast('Đã xóa');renderAll()}
+    });
     renderAll();
   </script>
 </body>
