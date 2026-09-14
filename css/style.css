@@ -1063,3 +1063,365 @@ body.has-fab-dock .ticket-float-mini {
   transform: none !important;
   transition: none !important;
 }
+
+/* ============================================================
+   V14 — Fix scrollbar, misaligned panels, homepage polish
+   ============================================================ */
+
+/* 1) Hide ALL scrollbars on sidebar */
+.sidebar,
+.side-inner {
+  overflow: hidden !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+.sidebar::-webkit-scrollbar,
+.side-inner::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
+  display: none !important;
+  background: transparent !important;
+}
+
+/* Compact sidebar so all items + quote fit without scrolling */
+.sidebar {
+  width: 210px !important;
+  padding: 12px 10px 10px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+.side-inner {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+  max-height: calc(100vh - 72px) !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  gap: 0 !important;
+}
+.side-item {
+  padding: 8px 10px !important;
+  margin: 1px 0 !important;
+  font-size: 12.5px !important;
+  border-radius: 9px !important;
+  flex-shrink: 0 !important;
+  gap: 9px !important;
+  min-height: 0 !important;
+  line-height: 1.25 !important;
+}
+.side-icon {
+  width: 20px !important;
+  font-size: 15px !important;
+  flex-shrink: 0;
+}
+.side-quote {
+  position: relative !important;
+  bottom: auto !important;
+  margin-top: auto !important;
+  margin-bottom: 4px !important;
+  padding: 11px 12px 10px !important;
+  font-size: 10.5px !important;
+  line-height: 1.45 !important;
+  flex-shrink: 0 !important;
+  border-radius: 11px !important;
+}
+.side-quote:before {
+  font-size: 36px !important;
+  top: -12px !important;
+  left: 6px !important;
+}
+.side-quote small {
+  font-size: 11px !important;
+  margin-top: 4px !important;
+}
+
+/* Content offset matches new sidebar width */
+.content {
+  margin-left: 210px !important;
+}
+.shell {
+  width: min(1200px, calc(100vw - 210px - 40px)) !important;
+}
+
+/* 2) Fix dark panel misalignment — hero & sections clean edges */
+.hero {
+  overflow: hidden !important;
+  isolation: isolate;
+}
+.hero-art,
+.hero-glow {
+  pointer-events: none;
+}
+.page-overlay {
+  /* soften the harsh left dark strip that looked misaligned */
+  background: radial-gradient(circle at 65% 18%, rgba(110,74,255,.12), transparent 28%),
+              linear-gradient(90deg, rgba(2,9,16,.55) 0 10%, transparent 14%) !important;
+}
+
+/* 3) Homepage: tighter, cleaner hierarchy — no covered text */
+.hero {
+  grid-template-columns: 1.4fr 0.9fr !important;
+  gap: 12px 24px !important;
+  padding: 24px 26px 18px !important;
+  min-height: 0 !important;
+  height: auto !important;
+}
+.hero-profile {
+  gap: 18px !important;
+  align-items: center !important;
+}
+.avatar-ring {
+  width: 132px !important;
+  height: 132px !important;
+}
+.script { font-size: 42px !important; line-height: 1.05 !important; }
+.hero-role { font-size: 14px !important; margin: 4px 0 6px !important; }
+.hero-copy p {
+  max-width: 400px !important;
+  font-size: 13px !important;
+  line-height: 1.6 !important;
+  margin: 0 !important;
+}
+.socials { margin-top: 10px !important; gap: 14px !important; font-size: 17px !important; }
+
+.clock-card {
+  padding: 14px 16px !important;
+  align-self: start !important;
+}
+.clock-card .time { font-size: 28px !important; }
+.clock-label { font-size: 9px !important; }
+.visit-counter { font-size: 10px !important; margin-top: 8px !important; }
+
+.hero-stats {
+  grid-column: 1 / -1 !important;
+  margin: 4px 0 0 !important;
+  height: 60px !important;
+}
+.hero-stats strong { font-size: 15px !important; }
+.hero-stats span { font-size: 10px !important; }
+
+/* Vertical text on hero — don't overlap content */
+.hero:before {
+  opacity: .22 !important;
+  right: 14px !important;
+  top: 14px !important;
+  font-size: 9px !important;
+  letter-spacing: 2.5px !important;
+  z-index: 1 !important;
+  max-height: 70% !important;
+}
+
+/* Music row cleaner */
+.music-home {
+  margin-top: 14px !important;
+  padding: 14px 18px !important;
+  gap: 14px !important;
+  align-items: center !important;
+}
+
+/* Insights + latest spacing */
+.home-insights { margin-top: 14px !important; gap: 14px !important; }
+.insight-card { padding: 20px 22px !important; }
+.insight-card h2 { font-size: 20px !important; margin-bottom: 6px !important; }
+.insight-card p { font-size: 12px !important; }
+.live-stats b { font-size: 24px !important; }
+.live-stats div { padding: 16px 14px !important; }
+
+.latest, .history-section { margin-top: 14px !important; }
+.resource-cards { gap: 14px !important; }
+.resource-card {
+  min-height: 180px !important;
+  padding: 15px !important;
+}
+
+/* Intro section */
+.intro {
+  margin-top: 14px !important;
+  padding: 20px !important;
+  gap: 16px !important;
+}
+.intro-copy h2 { font-size: 18px !important; }
+.intro-copy p { font-size: 12.5px !important; margin: 6px 0 !important; }
+.signature { font-size: 28px !important; }
+.category-grid { gap: 10px !important; }
+.cat-card {
+  min-height: 128px !important;
+  padding: 14px 10px 10px !important;
+}
+
+.section { margin-top: 14px !important; padding: 16px 18px !important; }
+
+/* Footer not colliding with dock */
+.footer {
+  margin-top: 28px !important;
+  padding-bottom: 48px !important;
+}
+
+/* Ensure no horizontal page scroll from sidebar/dock */
+body, html {
+  overflow-x: hidden !important;
+}
+.page-bg, .page-overlay, .petal-layer {
+  max-width: 100vw !important;
+}
+
+@media (max-width: 960px) {
+  .sidebar { display: none !important; }
+  .content { margin-left: 0 !important; }
+  .shell { width: calc(100vw - 28px) !important; }
+}
+
+/* ============================================================
+   V15 — CRITICAL: kill sidebar scrollbar + fix footer under sidebar
+   ============================================================ */
+
+/* Force-kill every possible scrollbar on sidebar */
+aside.sidebar,
+aside.sidebar *,
+.sidebar,
+.sidebar *,
+.side-inner {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+aside.sidebar::-webkit-scrollbar,
+aside.sidebar *::-webkit-scrollbar,
+.sidebar::-webkit-scrollbar,
+.sidebar *::-webkit-scrollbar,
+.side-inner::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
+  display: none !important;
+  background: transparent !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+}
+
+.sidebar,
+.side-inner {
+  overflow: hidden !important;
+  overflow-x: hidden !important;
+  overflow-y: hidden !important;
+}
+
+/* Make sidebar a clean fixed column — no internal scroll box */
+.sidebar {
+  position: fixed !important;
+  left: 0 !important;
+  top: 64px !important;
+  bottom: 0 !important;
+  width: 200px !important;
+  padding: 10px 8px 12px !important;
+  z-index: 25 !important;
+  background: transparent !important;
+  border-right: none !important;
+  box-shadow: none !important;
+}
+.side-inner {
+  height: 100% !important;
+  max-height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+  gap: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+.side-item {
+  flex: 0 0 auto !important;
+  padding: 7px 10px !important;
+  margin: 0 !important;
+  font-size: 12px !important;
+  line-height: 1.2 !important;
+  min-height: 34px !important;
+  box-sizing: border-box !important;
+}
+.side-quote {
+  flex: 0 0 auto !important;
+  margin-top: 12px !important;
+  margin-bottom: 0 !important;
+  padding: 10px 11px !important;
+  font-size: 10px !important;
+  line-height: 1.4 !important;
+  max-height: none !important;
+}
+
+/* Content & footer both offset by sidebar width — no text under sidebar */
+.content {
+  margin-left: 200px !important;
+  padding-left: 12px !important;
+  padding-right: 20px !important;
+  width: auto !important;
+  max-width: none !important;
+  box-sizing: border-box !important;
+}
+.shell {
+  width: min(1180px, calc(100% - 12px)) !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* FOOTER: same left offset as content so "Gia Huy" is never under sidebar */
+footer.footer,
+.footer.shell,
+.footer {
+  margin-left: 200px !important;
+  width: calc(100% - 200px) !important;
+  max-width: none !important;
+  box-sizing: border-box !important;
+  padding-left: 20px !important;
+  padding-right: 24px !important;
+  padding-bottom: 56px !important;
+  display: grid !important;
+  grid-template-columns: minmax(160px, 1.1fr) 2fr auto !important;
+  gap: 16px !important;
+  align-items: center !important;
+  overflow: visible !important;
+}
+.footer-brand {
+  min-width: 0 !important;
+  overflow: visible !important;
+}
+.footer-brand .script {
+  font-size: 32px !important;
+  white-space: nowrap !important;
+}
+.footer-nav {
+  flex-wrap: wrap !important;
+  justify-content: center !important;
+  gap: 12px 16px !important;
+}
+.footer > small {
+  white-space: nowrap !important;
+  text-align: right !important;
+}
+
+/* Soften the left dark strip so it doesn't look like a misaligned frame */
+.page-overlay {
+  background:
+    radial-gradient(circle at 70% 12%, rgba(110,74,255,.10), transparent 30%),
+    linear-gradient(90deg, rgba(2,8,14,.35) 0%, transparent 12%) !important;
+}
+
+/* Prevent any element from creating page-level horizontal scroll */
+html, body {
+  overflow-x: hidden !important;
+  max-width: 100vw !important;
+}
+
+@media (max-width: 960px) {
+  .sidebar { display: none !important; }
+  .content,
+  footer.footer,
+  .footer.shell,
+  .footer {
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+  .shell { width: calc(100vw - 28px) !important; }
+}
