@@ -422,7 +422,7 @@
   font-family: 'Be Vietnam Pro', sans-serif !important;
 }
 
-/* Background layer — phủ kín màn hình, giữ tỉ lệ */
+/* Background layer — giữ nguyên tỉ lệ, không cover/phóng to */
 .auth-bg-layer {
   position: fixed !important;
   inset: 0 !important;
@@ -431,7 +431,7 @@
   background-color: #7ec8f0 !important;
   background-image: url('../assets/login-bg.png') !important;
   background-repeat: no-repeat !important;
-  background-size: cover !important;
+  background-size: contain !important;
   background-position: center center !important;
   filter: none !important;
   opacity: 1 !important;
