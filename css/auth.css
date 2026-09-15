@@ -533,24 +533,25 @@
   overflow: hidden !important;
 }
 
-/* Tabs + panels — cực gọn, vừa khung không thừa khoảng */
+/* Tabs + panels — bỏ khung trắng, chỉ giữ từng phần riêng */
 .auth-wrap.auth-frame .auth-tabs {
-  background: #fff !important;
-  border-radius: 8px 8px 0 0 !important;
-  overflow: hidden !important;
-  border: 1px solid rgba(197, 212, 230, 0.85) !important;
-  border-bottom: none !important;
+  background: transparent !important;
+  border-radius: 0 !important;
+  overflow: visible !important;
+  border: none !important;
   flex-shrink: 0 !important;
+  gap: 4px !important;
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
 }
 .auth-wrap.auth-frame .auth-panels {
-  background: #fff !important;
-  border: 1px solid rgba(197, 212, 230, 0.85) !important;
-  border-top: none !important;
-  border-radius: 0 0 8px 8px !important;
-  padding: 6px 8px 4px !important;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  padding: 6px 0 4px !important;
   flex: 0 0 auto !important;
   min-height: 0 !important;
-  overflow: hidden !important;
+  overflow: visible !important;
   display: flex !important;
   flex-direction: column !important;
 }
@@ -567,17 +568,29 @@
   font-size: 9.5px !important;
   padding: 6px 3px !important;
   line-height: 1.2 !important;
+  border-radius: 8px 8px 0 0 !important;
+  background: rgba(255, 255, 255, 0.92) !important;
+  border: 1px solid rgba(197, 212, 230, 0.7) !important;
+}
+.auth-wrap.auth-frame .auth-tab.active {
+  background: #fff !important;
+  color: var(--auth-blue2) !important;
+  box-shadow: inset 0 -2px 0 var(--auth-blue) !important;
 }
 .auth-wrap.auth-frame .auth-field {
   gap: 2px !important;
 }
 .auth-wrap.auth-frame .auth-field span {
   font-size: 9.5px !important;
+  color: #0f2d52 !important;
+  text-shadow: 0 1px 2px rgba(255,255,255,0.8) !important;
 }
 .auth-wrap.auth-frame .auth-field input {
   background: #fff !important;
   font-size: 11.5px !important;
   padding: 6px 10px !important;
+  border: 1.5px solid rgba(197, 212, 230, 0.9) !important;
+  box-shadow: 0 1px 4px rgba(15, 39, 68, 0.08) !important;
 }
 .auth-wrap.auth-frame .auth-submit {
   margin-top: 1px !important;
@@ -665,7 +678,7 @@
     padding: 5px 2px !important;
   }
   .auth-wrap.auth-frame .auth-panels {
-    padding: 5px 6px 3px !important;
+    padding: 5px 0 3px !important;
   }
   .auth-wrap.auth-frame .auth-field input {
     padding: 5px 8px !important;
