@@ -29,6 +29,13 @@ const Auth = (() => {
   function getTeachers() { return getList(TEACHERS_KEY); }
   function saveTeachers(list) { saveList(TEACHERS_KEY, list); }
 
+  /** Students belonging to a teacher (ownerId). Admin / no filter = all. */
+  function getStudentsByOwner(ownerId) {
+    const all = getStudents();
+    if (!ownerId || ownerId === 'admin') return all;
+    return all.filter(s => s.ownerId === ownerId);
+  }
+
   function genInvite(prefix) {
     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
     let s = (prefix || 'GH') + '-';
@@ -63,7 +70,13 @@ const Auth = (() => {
       x.inviteCode.toLowerCase() === inv.toLowerCase()
     );
     if (!found) return { ok: false, msg: 'Sai tên đăng nhập hoặc mã mời học sinh.' };
-    setSession({ role: 'student', username: found.username, id: found.id, at: Date.now() });
+    setSession({
+      role: 'student',
+      username: found.username,
+      id: found.id,
+      ownerId: found.ownerId || null,
+      at: Date.now()
+    });
     return { ok: true };
   }
 
@@ -113,7 +126,12 @@ const Auth = (() => {
     return s;
   }
 
-  function createAccount(kind, username) {
+  /**
+   * Create account.
+   * For students: pass ownerId (teacher id) so each teacher has their own list.
+   * Admin creating student without owner → ownerId 'admin'.
+   */
+  function createAccount(kind, username, ownerId) {
     const u = (username || '').trim();
     if (!u) return { ok: false, msg: 'Nhập tên đăng nhập.' };
     if (u.length < 2) return { ok: false, msg: 'Tên đăng nhập quá ngắn.' };
@@ -122,7 +140,6 @@ const Auth = (() => {
     if (list.some(x => x.username.toLowerCase() === u.toLowerCase())) {
       return { ok: false, msg: 'Tên đăng nhập đã tồn tại.' };
     }
-    // also unique across both lists
     const other = kind === 'teacher' ? getStudents() : getTeachers();
     if (other.some(x => x.username.toLowerCase() === u.toLowerCase())) {
       return { ok: false, msg: 'Tên đã dùng cho vai trò khác.' };
@@ -133,6 +150,12 @@ const Auth = (() => {
       inviteCode: genInvite(kind === 'teacher' ? 'GV' : 'HS'),
       created: Date.now()
     };
+    if (kind === 'student') {
+      row.ownerId = ownerId || 'admin';
+    }
+    if (kind === 'teacher') {
+      row.avatar = null;
+    }
     list.push(row);
     saveList(key, list);
     return { ok: true, account: row };
@@ -140,6 +163,12 @@ const Auth = (() => {
 
   function deleteAccount(kind, id) {
     const key = kind === 'teacher' ? TEACHERS_KEY : STUDENTS_KEY;
+    if (kind === 'teacher') {
+      // also remove students owned by this teacher
+      const students = getStudents().filter(s => s.ownerId !== id);
+      saveStudents(students);
+      try { localStorage.removeItem('giahuy-avatar-' + id); } catch (_) {}
+    }
     saveList(key, getList(key).filter(x => x.id !== id));
     return { ok: true };
   }
@@ -154,16 +183,100 @@ const Auth = (() => {
     return { ok: true, account: list[i] };
   }
 
-  // backward-compatible aliases
-  function createStudent(username) { return createAccount('student', username); }
+  /**
+   * Update username and/or invite code for an account.
+   * opts: { username?, inviteCode? }
+   */
+  function updateAccount(kind, id, opts) {
+    const key = kind === 'teacher' ? TEACHERS_KEY : STUDENTS_KEY;
+    const list = getList(key);
+    const i = list.findIndex(x => x.id === id);
+    if (i < 0) return { ok: false, msg: 'Không tìm thấy.' };
+    const row = list[i];
+    if (opts && opts.username != null) {
+      const u = String(opts.username).trim();
+      if (u.length < 2) return { ok: false, msg: 'Tên đăng nhập quá ngắn.' };
+      const clashSelf = list.some(x => x.id !== id && x.username.toLowerCase() === u.toLowerCase());
+      if (clashSelf) return { ok: false, msg: 'Tên đăng nhập đã tồn tại.' };
+      const other = kind === 'teacher' ? getStudents() : getTeachers();
+      if (other.some(x => x.username.toLowerCase() === u.toLowerCase())) {
+        return { ok: false, msg: 'Tên đã dùng cho vai trò khác.' };
+      }
+      row.username = u;
+    }
+    if (opts && opts.inviteCode != null) {
+      const inv = String(opts.inviteCode).trim();
+      if (inv.length < 4) return { ok: false, msg: 'Mã mời quá ngắn.' };
+      row.inviteCode = inv;
+    }
+    list[i] = row;
+    saveList(key, list);
+    // refresh session username if self
+    const s = getSession();
+    if (s && s.id === id && s.role === kind) {
+      s.username = row.username;
+      setSession(s);
+    }
+    return { ok: true, account: row };
+  }
+
+  function getTeacherById(id) {
+    return getTeachers().find(t => t.id === id) || null;
+  }
+
+  function setTeacherAvatar(id, dataUrl) {
+    const list = getTeachers();
+    const i = list.findIndex(x => x.id === id);
+    if (i < 0) return { ok: false, msg: 'Không tìm thấy.' };
+    list[i].avatar = dataUrl || null;
+    saveTeachers(list);
+    try {
+      if (dataUrl) localStorage.setItem('giahuy-avatar-' + id, dataUrl);
+      else localStorage.removeItem('giahuy-avatar-' + id);
+    } catch (_) {}
+    return { ok: true, account: list[i] };
+  }
+
+  function getTeacherAvatar(id) {
+    try {
+      const cached = localStorage.getItem('giahuy-avatar-' + id);
+      if (cached) return cached;
+    } catch (_) {}
+    const t = getTeacherById(id);
+    return (t && t.avatar) || null;
+  }
+
+  function createStudent(username, ownerId) {
+    return createAccount('student', username, ownerId);
+  }
   function deleteStudent(id) { return deleteAccount('student', id); }
   function resetInviteStudent(id) { return resetInvite('student', id); }
 
   return {
-    toast, getStudents, saveStudents, getTeachers, saveTeachers,
-    getSession, setSession, loginStudent, loginTeacher, loginAdmin,
-    logout, requireAuth, createAccount, deleteAccount, resetInvite,
-    createStudent, deleteStudent, resetInvite: resetInviteStudent,
-    TEACHER_PASS: ADMIN_PASS, ADMIN_PASS
+    toast,
+    getStudents,
+    saveStudents,
+    getTeachers,
+    saveTeachers,
+    getStudentsByOwner,
+    getSession,
+    setSession,
+    loginStudent,
+    loginTeacher,
+    loginAdmin,
+    logout,
+    requireAuth,
+    createAccount,
+    deleteAccount,
+    resetInvite,
+    updateAccount,
+    getTeacherById,
+    setTeacherAvatar,
+    getTeacherAvatar,
+    createStudent,
+    deleteStudent,
+    resetInviteStudent,
+    TEACHER_PASS: ADMIN_PASS,
+    ADMIN_PASS
   };
 })();

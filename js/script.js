@@ -71,10 +71,10 @@ function enhanceStudyUI(){
 function ensureDonateUI(){
   if(document.getElementById('donateModal')) return;
   document.body.insertAdjacentHTML('beforeend',`<button class="donate-fab" id="donateOpen" type="button" aria-label="Ủng hộ Thầy"><span class="donate-fab-icon"><i class="cil-education"></i></span><span>Ủng hộ Thầy</span></button><div class="donate-modal" id="donateModal" aria-hidden="true"><div class="donate-box"><button class="donate-close" id="donateClose" type="button" aria-label="Đóng">×</button><div class="donate-kicker">CẢM ƠN BẠN ĐÃ ĐỒNG HÀNH</div><h2>Ủng hộ Thầy Gia Huy duy trì website học tập</h2><p>Nếu website hữu ích với việc học của bạn, một lời ủng hộ nhỏ sẽ giúp thầy có thêm động lực cập nhật bài giảng, tài liệu và duy trì server.</p><div class="donate-grid"><div class="donate-qr-wrap"><div class="donate-qr-frame"><img src="assets/donate-qr.png" alt="QR ủng hộ Thầy"></div><span class="donate-demo">QR demo • thay bằng QR thanh toán thật</span></div><div class="donate-copy"><div class="donate-landmark"><i class="cil-education"></i><span>GV / Gia Huy</span></div><h3>Cảm ơn bạn đã ủng hộ ♡</h3><p>Đặt QR ngân hàng / MoMo / PayPal thật của bạn vào <code>assets/donate-qr.png</code> để dùng ngay mà không cần sửa giao diện.</p><div class="donate-note"><span>✦</span> Một chút ủng hộ • một chặng đường dài</div></div></div></div></div>`);
-  $('#donateOpen').addEventListener('click',()=>{$('#donateModal').classList.add('open');$('#donateModal').setAttribute('aria-hidden','false')});
-  $('#donateClose').addEventListener('click',closeDonate);
-  $('#donateModal').addEventListener('click',e=>{if(e.target.id==='donateModal')closeDonate()});
-  function closeDonate(){$('#donateModal').classList.remove('open');$('#donateModal').setAttribute('aria-hidden','true')}
+  $('#donateOpen')?.addEventListener('click',()=>{$('#donateModal')?.classList.add('open');$('#donateModal')?.setAttribute('aria-hidden','false')});
+  $('#donateClose')?.addEventListener('click',closeDonate);
+  $('#donateModal')?.addEventListener('click',e=>{if(e.target.id==='donateModal')closeDonate()});
+  function closeDonate(){$('#donateModal')?.classList.remove('open');$('#donateModal')?.setAttribute('aria-hidden','true')}
 }
 const avatarDefault='assets/images/avatar.gif';avatarSet(localStorage.getItem('giahuy-avatar')||avatarDefault);
 const getAnn=()=>localStorage.getItem('giahuy-announcement')||'';

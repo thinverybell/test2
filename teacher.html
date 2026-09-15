@@ -10,6 +10,20 @@
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Pacifico&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/@coreui/icons/css/free.min.css">
 <link rel="stylesheet" href="css/auth.css">
+<style>
+  .profile-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .profile-avatar{width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid #c5d4e6;background:#e8f0f9}
+  .profile-meta{flex:1;min-width:180px}
+  .profile-meta b{display:block;font-size:16px;color:#0f2d52}
+  .profile-meta small{color:#5a7390;font-size:12px}
+  .profile-actions{display:flex;gap:8px;flex-wrap:wrap}
+  .t-form.stack{flex-direction:column;align-items:stretch}
+  .t-form.stack label{display:flex;flex-direction:column;gap:6px;font-size:13px;color:#3a5168}
+  .t-form.stack input{border:1px solid #c5d4e6;border-radius:10px;padding:10px 12px;font:inherit}
+  .owner-tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:999px;background:#e8f0f9;color:#1a4f8c;font-weight:600}
+  .manage-box{margin-top:14px;padding:14px;border:1px solid #dce5ef;border-radius:12px;background:#fafcfe}
+  .manage-box h3{margin:0 0 10px;font-size:14px;color:#0f2d52}
+</style>
 </head>
 <body class="teacher-page">
   <header class="teacher-top">
@@ -35,7 +49,36 @@
       </div>
     </section>
 
-    <!-- Staff tools -->
+    <section class="t-card" id="profileSection">
+      <h2>Hồ sơ tài khoản</h2>
+      <p class="sub" id="profileHint">Đổi avatar, tên đăng nhập và mã mời của bạn.</p>
+      <div class="profile-row" style="margin-bottom:14px">
+        <img class="profile-avatar" id="profileAvatar" src="assets/images/avatar.gif" alt="Avatar">
+        <div class="profile-meta">
+          <b id="profileName">—</b>
+          <small id="profileCode">Mã mời: —</small>
+        </div>
+        <div class="profile-actions">
+          <button type="button" class="t-btn primary" id="btnChangeAvatar"><i class="cil-camera"></i> Đổi avatar</button>
+          <button type="button" class="t-btn" id="btnResetAvatar">Khôi phục</button>
+          <input type="file" id="avatarFile" accept="image/*" hidden>
+        </div>
+      </div>
+      <form class="t-form stack" id="profileForm">
+        <label>Tên đăng nhập
+          <input type="text" id="profileUsername" maxlength="40" required>
+        </label>
+        <label>Mã mời (mật khẩu đăng nhập)
+          <input type="text" id="profileInvite" maxlength="24" required>
+        </label>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button type="submit" class="t-btn primary">Lưu thay đổi</button>
+          <button type="button" class="t-btn" id="btnRegenInvite">Tạo mã mời mới</button>
+        </div>
+      </form>
+      <p id="profileResult" class="sub" style="margin-top:12px;margin-bottom:0" hidden></p>
+    </section>
+
     <section class="t-card">
       <h2>Công cụ panel</h2>
       <p class="sub" id="toolsHint">Các chức năng quản lý nội dung.</p>
@@ -50,7 +93,7 @@
 
     <section class="t-card">
       <h2>Tạo tài khoản học sinh</h2>
-      <p class="sub">Tên + mã mời. Học sinh đăng nhập tab Học sinh trên trang login.</p>
+      <p class="sub" id="stuCreateHint">Tên + mã mời. Học sinh đăng nhập tab Học sinh trên trang login. Mỗi giáo viên có danh sách học sinh riêng.</p>
       <form class="t-form" id="createStudentForm">
         <input type="text" id="newStudent" placeholder="Tên đăng nhập học sinh" maxlength="40" required>
         <button type="submit" class="t-btn primary">+ Tạo học sinh</button>
@@ -59,10 +102,18 @@
     </section>
 
     <section class="t-card">
-      <h2>Danh sách học sinh</h2>
+      <h2 id="studentListTitle">Danh sách học sinh</h2>
       <div class="t-table-wrap">
         <table class="t-table">
-          <thead><tr><th>Tên</th><th>Mã mời</th><th>Ngày tạo</th><th>Thao tác</th></tr></thead>
+          <thead>
+            <tr>
+              <th>Tên</th>
+              <th>Mã mời</th>
+              <th id="ownerColHead" hidden>Giáo viên</th>
+              <th>Ngày tạo</th>
+              <th>Thao tác</th>
+            </tr>
+          </thead>
           <tbody id="studentBody"></tbody>
         </table>
       </div>
@@ -80,11 +131,26 @@
 
     <section class="t-card" id="teacherListSection">
       <h2>Danh sách giáo viên</h2>
+      <p class="sub">Nhấn <strong>Quản lý HS</strong> để xem / sửa danh sách học sinh của từng giáo viên.</p>
       <div class="t-table-wrap">
         <table class="t-table">
           <thead><tr><th>Tên</th><th>Mã mời</th><th>Ngày tạo</th><th>Thao tác</th></tr></thead>
           <tbody id="teacherBody"></tbody>
         </table>
+      </div>
+      <div id="manageTeacherBox" class="manage-box" hidden>
+        <h3 id="manageTeacherTitle">Học sinh của giáo viên</h3>
+        <form class="t-form" id="manageCreateStudentForm" style="margin-bottom:12px">
+          <input type="text" id="manageNewStudent" placeholder="Tên đăng nhập học sinh" maxlength="40" required>
+          <button type="submit" class="t-btn primary">+ Tạo HS cho GV này</button>
+        </form>
+        <div class="t-table-wrap">
+          <table class="t-table">
+            <thead><tr><th>Tên</th><th>Mã mời</th><th>Ngày tạo</th><th>Thao tác</th></tr></thead>
+            <tbody id="manageStudentBody"></tbody>
+          </table>
+        </div>
+        <button type="button" class="t-btn" id="closeManageBtn" style="margin-top:10px">Đóng</button>
       </div>
     </section>
   </main>
@@ -95,73 +161,306 @@
     const session = Auth.requireAuth({ staffOnly: true });
     if (!session) throw new Error('redirect');
     const isAdmin = session.role === 'admin';
+    const myId = session.id || null;
 
     document.getElementById('panelTitle').textContent = isAdmin ? 'Panel Quản trị viên' : 'Panel Giáo viên';
     document.getElementById('roleLabel').textContent = isAdmin ? 'Toàn quyền cài đặt website' : 'Upload · Thư viện · Thống kê';
     document.getElementById('statRole').textContent = isAdmin ? 'Admin' : 'GV';
     document.getElementById('toolsHint').textContent = isAdmin
       ? 'Đầy đủ chức năng Cài đặt: Upload, Thư viện, Nhạc, Thống kê, avatar…'
-      : 'Chỉ Upload, Thư viện và Thống kê (không cần nhập mật khẩu).';
+      : 'Chỉ Upload, Thư viện và Thống kê (không có Nhạc / cài đặt toàn bộ).';
+    document.getElementById('stuCreateHint').textContent = isAdmin
+      ? 'Admin tạo học sinh (gán vào Admin). Mỗi giáo viên có danh sách HS riêng — dùng Quản lý HS ở bảng giáo viên.'
+      : 'Học sinh bạn tạo chỉ hiện trong danh sách của bạn. Học sinh đăng nhập tab Học sinh trên trang login.';
 
     if (isAdmin) {
       document.getElementById('btnMusic').hidden = false;
       document.getElementById('btnFullSettings').hidden = false;
+      document.getElementById('ownerColHead').hidden = false;
+      document.getElementById('studentListTitle').textContent = 'Danh sách học sinh (tất cả)';
     } else {
       document.getElementById('teacherCreateSection').style.display = 'none';
       document.getElementById('teacherListSection').style.display = 'none';
+      document.getElementById('btnMusic').hidden = true;
+      document.getElementById('btnFullSettings').hidden = true;
     }
 
-    document.getElementById('logoutBtn').addEventListener('click', () => Auth.logout());
+    const profileSection = document.getElementById('profileSection');
+    if (isAdmin) {
+      profileSection.style.display = 'none';
+    } else {
+      loadProfile();
+    }
 
-    // links already point to admin-panel.html?tab=...
+    function loadProfile() {
+      const t = Auth.getTeacherById(myId);
+      if (!t) return;
+      const av = Auth.getTeacherAvatar(myId) || 'assets/images/avatar.gif';
+      document.getElementById('profileAvatar').src = av;
+      document.getElementById('profileName').textContent = t.username;
+      document.getElementById('profileCode').textContent = 'Mã mời: ' + t.inviteCode;
+      document.getElementById('profileUsername').value = t.username;
+      document.getElementById('profileInvite').value = t.inviteCode;
+    }
+
+    document.getElementById('btnChangeAvatar').addEventListener('click', () => {
+      document.getElementById('avatarFile').click();
+    });
+    document.getElementById('avatarFile').addEventListener('change', e => {
+      const f = e.target.files && e.target.files[0];
+      if (!f || isAdmin) return;
+      if (f.size > 1.5 * 1024 * 1024) {
+        Auth.toast('Ảnh quá lớn (tối đa ~1.5MB)', true);
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        const r = Auth.setTeacherAvatar(myId, reader.result);
+        if (r.ok) {
+          document.getElementById('profileAvatar').src = reader.result;
+          Auth.toast('Đã đổi avatar');
+        }
+      };
+      reader.readAsDataURL(f);
+      e.target.value = '';
+    });
+    document.getElementById('btnResetAvatar').addEventListener('click', () => {
+      if (isAdmin) return;
+      Auth.setTeacherAvatar(myId, null);
+      document.getElementById('profileAvatar').src = 'assets/images/avatar.gif';
+      Auth.toast('Đã khôi phục avatar');
+    });
+    document.getElementById('profileForm').addEventListener('submit', e => {
+      e.preventDefault();
+      if (isAdmin) return;
+      const r = Auth.updateAccount('teacher', myId, {
+        username: document.getElementById('profileUsername').value,
+        inviteCode: document.getElementById('profileInvite').value
+      });
+      const out = document.getElementById('profileResult');
+      out.hidden = false;
+      if (!r.ok) {
+        out.style.color = '#9b2c2c';
+        out.textContent = r.msg;
+        Auth.toast(r.msg, true);
+        return;
+      }
+      out.style.color = '#0d3a6e';
+      out.textContent = 'Đã lưu hồ sơ.';
+      Auth.toast('Đã lưu hồ sơ');
+      loadProfile();
+    });
+    document.getElementById('btnRegenInvite').addEventListener('click', () => {
+      if (isAdmin) return;
+      if (!confirm('Tạo mã mời mới? Mã cũ sẽ không dùng được.')) return;
+      const r = Auth.resetInvite('teacher', myId);
+      if (r.ok) {
+        document.getElementById('profileInvite').value = r.account.inviteCode;
+        loadProfile();
+        Auth.toast('Mã mới: ' + r.account.inviteCode);
+      }
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', () => Auth.logout());
 
     function fmtDate(ts){ try{return new Date(ts).toLocaleString('vi-VN')}catch{return '—'} }
     function escapeHtml(str){return String(str||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 
-    function renderTable(kind){
-      const list=(kind==='teacher'?Auth.getTeachers():Auth.getStudents()).slice().sort((a,b)=>(b.created||0)-(a.created||0));
-      if(kind==='teacher') document.getElementById('statTeachers').textContent=list.length;
-      else document.getElementById('statStudents').textContent=list.length;
-      const body=document.getElementById(kind==='teacher'?'teacherBody':'studentBody');
-      if(!list.length){body.innerHTML='<tr><td colspan="4" class="t-empty">Chưa có tài khoản.</td></tr>';return}
-      body.innerHTML=list.map(s=>`<tr data-id="${s.id}" data-kind="${kind}">
-        <td><strong>${escapeHtml(s.username)}</strong></td>
-        <td><span class="code">${escapeHtml(s.inviteCode)}</span></td>
-        <td>${fmtDate(s.created)}</td>
-        <td class="actions">
-          <button type="button" class="t-btn" data-act="copy" data-user="${escapeHtml(s.username)}" data-code="${escapeHtml(s.inviteCode)}">Sao chép</button>
-          <button type="button" class="t-btn" data-act="reset">Đổi mã</button>
-          <button type="button" class="t-btn danger" data-act="del">Xóa</button>
-        </td></tr>`).join('');
+    function ownerLabel(ownerId) {
+      if (!ownerId || ownerId === 'admin') return 'Admin';
+      const t = Auth.getTeacherById(ownerId);
+      return t ? t.username : ownerId;
     }
-    function renderAll(){renderTable('student');renderTable('teacher')}
 
-    document.getElementById('createStudentForm').addEventListener('submit',e=>{
+    function studentListForView() {
+      if (isAdmin) return Auth.getStudents();
+      return Auth.getStudentsByOwner(myId);
+    }
+
+    function renderStudents() {
+      const list = studentListForView().slice().sort((a,b)=>(b.created||0)-(a.created||0));
+      document.getElementById('statStudents').textContent = list.length;
+      const body = document.getElementById('studentBody');
+      const colSpan = isAdmin ? 5 : 4;
+      if (!list.length) {
+        body.innerHTML = '<tr><td colspan="' + colSpan + '" class="t-empty">Chưa có tài khoản.</td></tr>';
+        return;
+      }
+      body.innerHTML = list.map(s => '<tr data-id="' + s.id + '" data-kind="student">' +
+        '<td><strong>' + escapeHtml(s.username) + '</strong></td>' +
+        '<td><span class="code">' + escapeHtml(s.inviteCode) + '</span></td>' +
+        (isAdmin ? '<td><span class="owner-tag">' + escapeHtml(ownerLabel(s.ownerId)) + '</span></td>' : '') +
+        '<td>' + fmtDate(s.created) + '</td>' +
+        '<td class="actions">' +
+          '<button type="button" class="t-btn" data-act="copy" data-user="' + escapeHtml(s.username) + '" data-code="' + escapeHtml(s.inviteCode) + '">Sao chép</button> ' +
+          '<button type="button" class="t-btn" data-act="reset">Đổi mã</button> ' +
+          '<button type="button" class="t-btn danger" data-act="del">Xóa</button>' +
+        '</td></tr>').join('');
+    }
+
+    let manageTeacherId = null;
+
+    function renderTeachers() {
+      if (!isAdmin) {
+        document.getElementById('statTeachers').textContent = '—';
+        return;
+      }
+      const list = Auth.getTeachers().slice().sort((a,b)=>(b.created||0)-(a.created||0));
+      document.getElementById('statTeachers').textContent = list.length;
+      const body = document.getElementById('teacherBody');
+      if (!list.length) {
+        body.innerHTML = '<tr><td colspan="4" class="t-empty">Chưa có tài khoản.</td></tr>';
+        return;
+      }
+      body.innerHTML = list.map(s => {
+        const hsCount = Auth.getStudentsByOwner(s.id).length;
+        return '<tr data-id="' + s.id + '" data-kind="teacher">' +
+          '<td><strong>' + escapeHtml(s.username) + '</strong> <span class="owner-tag">' + hsCount + ' HS</span></td>' +
+          '<td><span class="code">' + escapeHtml(s.inviteCode) + '</span></td>' +
+          '<td>' + fmtDate(s.created) + '</td>' +
+          '<td class="actions">' +
+            '<button type="button" class="t-btn primary" data-act="manage">Quản lý HS</button> ' +
+            '<button type="button" class="t-btn" data-act="copy" data-user="' + escapeHtml(s.username) + '" data-code="' + escapeHtml(s.inviteCode) + '">Sao chép</button> ' +
+            '<button type="button" class="t-btn" data-act="reset">Đổi mã</button> ' +
+            '<button type="button" class="t-btn danger" data-act="del">Xóa</button>' +
+          '</td></tr>';
+      }).join('');
+    }
+
+    function renderManageStudents() {
+      const box = document.getElementById('manageTeacherBox');
+      if (!manageTeacherId) {
+        box.hidden = true;
+        return;
+      }
+      const t = Auth.getTeacherById(manageTeacherId);
+      if (!t) {
+        box.hidden = true;
+        manageTeacherId = null;
+        return;
+      }
+      box.hidden = false;
+      document.getElementById('manageTeacherTitle').textContent =
+        'Học sinh của giáo viên: ' + t.username;
+      const list = Auth.getStudentsByOwner(manageTeacherId).slice().sort((a,b)=>(b.created||0)-(a.created||0));
+      const body = document.getElementById('manageStudentBody');
+      if (!list.length) {
+        body.innerHTML = '<tr><td colspan="4" class="t-empty">Chưa có học sinh.</td></tr>';
+        return;
+      }
+      body.innerHTML = list.map(s => '<tr data-id="' + s.id + '" data-kind="student" data-manage="1">' +
+        '<td><strong>' + escapeHtml(s.username) + '</strong></td>' +
+        '<td><span class="code">' + escapeHtml(s.inviteCode) + '</span></td>' +
+        '<td>' + fmtDate(s.created) + '</td>' +
+        '<td class="actions">' +
+          '<button type="button" class="t-btn" data-act="copy" data-user="' + escapeHtml(s.username) + '" data-code="' + escapeHtml(s.inviteCode) + '">Sao chép</button> ' +
+          '<button type="button" class="t-btn" data-act="reset">Đổi mã</button> ' +
+          '<button type="button" class="t-btn danger" data-act="del">Xóa</button>' +
+        '</td></tr>').join('');
+    }
+
+    function renderAll() {
+      renderStudents();
+      renderTeachers();
+      renderManageStudents();
+    }
+
+    document.getElementById('createStudentForm').addEventListener('submit', e => {
       e.preventDefault();
-      const r=Auth.createAccount('student',document.getElementById('newStudent').value);
-      const out=document.getElementById('stuResult'); out.hidden=false;
-      if(!r.ok){out.style.color='#9b2c2c';out.textContent=r.msg;Auth.toast(r.msg,true);return}
-      out.style.color='#0d3a6e';
-      out.innerHTML=`HS: <strong>${escapeHtml(r.account.username)}</strong> — <span class="code">${escapeHtml(r.account.inviteCode)}</span>`;
-      document.getElementById('newStudent').value=''; Auth.toast('Đã tạo học sinh'); renderAll();
+      const ownerId = isAdmin ? 'admin' : myId;
+      const r = Auth.createAccount('student', document.getElementById('newStudent').value, ownerId);
+      const out = document.getElementById('stuResult');
+      out.hidden = false;
+      if (!r.ok) {
+        out.style.color = '#9b2c2c';
+        out.textContent = r.msg;
+        Auth.toast(r.msg, true);
+        return;
+      }
+      out.style.color = '#0d3a6e';
+      out.innerHTML = 'HS: <strong>' + escapeHtml(r.account.username) + '</strong> — <span class="code">' + escapeHtml(r.account.inviteCode) + '</span>';
+      document.getElementById('newStudent').value = '';
+      Auth.toast('Đã tạo học sinh');
+      renderAll();
     });
-    document.getElementById('createTeacherForm').addEventListener('submit',e=>{
+
+    document.getElementById('createTeacherForm').addEventListener('submit', e => {
       e.preventDefault();
-      if(!isAdmin) return Auth.toast('Chỉ admin được tạo giáo viên', true);
-      const r=Auth.createAccount('teacher',document.getElementById('newTeacher').value);
-      const out=document.getElementById('teaResult'); out.hidden=false;
-      if(!r.ok){out.style.color='#9b2c2c';out.textContent=r.msg;Auth.toast(r.msg,true);return}
-      out.style.color='#0d3a6e';
-      out.innerHTML=`GV: <strong>${escapeHtml(r.account.username)}</strong> — <span class="code">${escapeHtml(r.account.inviteCode)}</span>`;
-      document.getElementById('newTeacher').value=''; Auth.toast('Đã tạo giáo viên'); renderAll();
+      if (!isAdmin) return Auth.toast('Chỉ admin được tạo giáo viên', true);
+      const r = Auth.createAccount('teacher', document.getElementById('newTeacher').value);
+      const out = document.getElementById('teaResult');
+      out.hidden = false;
+      if (!r.ok) {
+        out.style.color = '#9b2c2c';
+        out.textContent = r.msg;
+        Auth.toast(r.msg, true);
+        return;
+      }
+      out.style.color = '#0d3a6e';
+      out.innerHTML = 'GV: <strong>' + escapeHtml(r.account.username) + '</strong> — <span class="code">' + escapeHtml(r.account.inviteCode) + '</span>';
+      document.getElementById('newTeacher').value = '';
+      Auth.toast('Đã tạo giáo viên');
+      renderAll();
     });
-    document.body.addEventListener('click',e=>{
-      const btn=e.target.closest('[data-act]'); if(!btn) return;
-      const tr=btn.closest('tr'); const id=tr?.dataset.id; const kind=tr?.dataset.kind; const act=btn.dataset.act;
-      if(act==='copy'){const t=`Tên: ${btn.dataset.user}\nMã mời: ${btn.dataset.code}`;navigator.clipboard?.writeText(t).then(()=>Auth.toast('Đã sao chép')).catch(()=>Auth.toast(t))}
-      else if(act==='reset'&&id){if(!confirm('Đổi mã mời?'))return;const r=Auth.resetInvite(kind,id);if(r.ok){Auth.toast('Mã mới: '+r.account.inviteCode);renderAll()}}
-      else if(act==='del'&&id){if(!confirm('Xóa tài khoản?'))return;Auth.deleteAccount(kind,id);Auth.toast('Đã xóa');renderAll()}
+
+    document.getElementById('manageCreateStudentForm').addEventListener('submit', e => {
+      e.preventDefault();
+      if (!isAdmin || !manageTeacherId) return;
+      const r = Auth.createAccount('student', document.getElementById('manageNewStudent').value, manageTeacherId);
+      if (!r.ok) {
+        Auth.toast(r.msg, true);
+        return;
+      }
+      document.getElementById('manageNewStudent').value = '';
+      Auth.toast('Đã tạo học sinh cho GV');
+      renderAll();
     });
+
+    document.getElementById('closeManageBtn').addEventListener('click', () => {
+      manageTeacherId = null;
+      renderManageStudents();
+    });
+
+    document.body.addEventListener('click', e => {
+      const btn = e.target.closest('[data-act]');
+      if (!btn) return;
+      const tr = btn.closest('tr');
+      const id = tr && tr.dataset.id;
+      const kind = tr && tr.dataset.kind;
+      const act = btn.dataset.act;
+
+      if (act === 'copy') {
+        const t = 'Tên: ' + btn.dataset.user + String.fromCharCode(10) + 'Mã mời: ' + btn.dataset.code;
+        if (navigator.clipboard) navigator.clipboard.writeText(t).then(() => Auth.toast('Đã sao chép')).catch(() => Auth.toast(t));
+        else Auth.toast(t);
+        return;
+      }
+      if (act === 'manage' && kind === 'teacher' && id) {
+        manageTeacherId = id;
+        renderManageStudents();
+        document.getElementById('manageTeacherBox').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        return;
+      }
+      if (act === 'reset' && id) {
+        if (!confirm('Đổi mã mời?')) return;
+        const r = Auth.resetInvite(kind, id);
+        if (r.ok) {
+          Auth.toast('Mã mới: ' + r.account.inviteCode);
+          renderAll();
+        }
+        return;
+      }
+      if (act === 'del' && id) {
+        if (!confirm(kind === 'teacher'
+          ? 'Xóa giáo viên? Toàn bộ học sinh của GV này cũng sẽ bị xóa.'
+          : 'Xóa tài khoản?')) return;
+        Auth.deleteAccount(kind, id);
+        if (kind === 'teacher' && manageTeacherId === id) manageTeacherId = null;
+        Auth.toast('Đã xóa');
+        renderAll();
+      }
+    });
+
     renderAll();
   </script>
 </body>
