@@ -507,18 +507,18 @@
   image-rendering: auto !important;
 }
 
-/* Form card — absolute inset đúng vùng trắng (đỏ ảnh 2), form gọn căn giữa */
+/* Form card — absolute inset đúng vùng trắng, form nhỏ hơn để lộ khung ảnh */
 .auth-wrap.auth-frame .auth-card {
   position: absolute !important;
   z-index: 1 !important;
-  top: 36% !important;
-  left: 15% !important;
-  right: 11% !important;
-  bottom: 14% !important;
+  top: 38% !important;
+  left: 18% !important;
+  right: 14% !important;
+  bottom: 20% !important;
   width: auto !important;
   height: auto !important;
   margin: 0 !important;
-  padding: 4px 2px !important;
+  padding: 2px 0 !important;
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;
@@ -530,17 +530,17 @@
   box-sizing: border-box !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
-  overflow: hidden !important;
+  overflow: visible !important;
 }
 
-/* Tabs + panels — bỏ khung trắng, chỉ giữ từng phần riêng */
+/* Tabs + panels — bỏ khung trắng, form bé hơn */
 .auth-wrap.auth-frame .auth-tabs {
   background: transparent !important;
   border-radius: 0 !important;
   overflow: visible !important;
   border: none !important;
   flex-shrink: 0 !important;
-  gap: 4px !important;
+  gap: 3px !important;
   display: grid !important;
   grid-template-columns: 1fr 1fr !important;
 }
@@ -548,7 +548,7 @@
   background: transparent !important;
   border: none !important;
   border-radius: 0 !important;
-  padding: 6px 0 4px !important;
+  padding: 4px 0 2px !important;
   flex: 0 0 auto !important;
   min-height: 0 !important;
   overflow: visible !important;
@@ -558,17 +558,17 @@
 .auth-wrap.auth-frame .auth-panel {
   display: none !important;
   flex: 0 0 auto !important;
-  gap: 6px !important;
+  gap: 4px !important;
   flex-direction: column !important;
 }
 .auth-wrap.auth-frame .auth-panel.active {
   display: flex !important;
 }
 .auth-wrap.auth-frame .auth-tab {
-  font-size: 9.5px !important;
-  padding: 6px 3px !important;
-  line-height: 1.2 !important;
-  border-radius: 8px 8px 0 0 !important;
+  font-size: 8.5px !important;
+  padding: 5px 2px !important;
+  line-height: 1.15 !important;
+  border-radius: 7px 7px 0 0 !important;
   background: rgba(255, 255, 255, 0.92) !important;
   border: 1px solid rgba(197, 212, 230, 0.7) !important;
 }
@@ -578,24 +578,24 @@
   box-shadow: inset 0 -2px 0 var(--auth-blue) !important;
 }
 .auth-wrap.auth-frame .auth-field {
-  gap: 2px !important;
+  gap: 1px !important;
 }
 .auth-wrap.auth-frame .auth-field span {
-  font-size: 9.5px !important;
+  font-size: 8.5px !important;
   color: #0f2d52 !important;
   text-shadow: 0 1px 2px rgba(255,255,255,0.8) !important;
 }
 .auth-wrap.auth-frame .auth-field input {
   background: #fff !important;
-  font-size: 11.5px !important;
-  padding: 6px 10px !important;
+  font-size: 10.5px !important;
+  padding: 5px 8px !important;
   border: 1.5px solid rgba(197, 212, 230, 0.9) !important;
   box-shadow: 0 1px 4px rgba(15, 39, 68, 0.08) !important;
 }
 .auth-wrap.auth-frame .auth-submit {
-  margin-top: 1px !important;
-  padding: 7px 12px !important;
-  font-size: 11.5px !important;
+  margin-top: 2px !important;
+  padding: 6px 10px !important;
+  font-size: 10.5px !important;
 }
 .auth-wrap.auth-frame .auth-forgot {
   background: transparent !important;
@@ -668,27 +668,27 @@
     max-width: min(340px, 94vw, calc(90vh * 403 / 619)) !important;
   }
   .auth-wrap.auth-frame .auth-card {
-    top: 35.5% !important;
-    left: 14% !important;
-    right: 10% !important;
-    bottom: 13.5% !important;
+    top: 37% !important;
+    left: 17% !important;
+    right: 13% !important;
+    bottom: 19% !important;
   }
   .auth-wrap.auth-frame .auth-tab {
-    font-size: 9px !important;
-    padding: 5px 2px !important;
+    font-size: 8px !important;
+    padding: 4px 2px !important;
   }
   .auth-wrap.auth-frame .auth-panels {
-    padding: 5px 0 3px !important;
+    padding: 3px 0 2px !important;
   }
   .auth-wrap.auth-frame .auth-field input {
-    padding: 5px 8px !important;
-    font-size: 11px !important;
+    padding: 4px 7px !important;
+    font-size: 10px !important;
   }
   .auth-wrap.auth-frame .auth-submit {
-    padding: 6px 10px !important;
-    font-size: 11px !important;
+    padding: 5px 9px !important;
+    font-size: 10px !important;
   }
   .auth-wrap.auth-frame .auth-forgot {
-    font-size: 8.5px !important;
+    font-size: 8px !important;
   }
 }
