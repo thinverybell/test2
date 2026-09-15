@@ -471,6 +471,32 @@
   line-height: 1;
 }
 
+/* Logo góc trái trên */
+.logo-corner {
+  position: fixed !important;
+  top: 12px !important;
+  left: 12px !important;
+  z-index: 20 !important;
+  width: auto !important;
+  height: 56px !important;
+  max-width: 140px !important;
+  object-fit: contain !important;
+  filter: drop-shadow(0 4px 12px rgba(15, 39, 68, 0.2)) !important;
+  transition: 0.2s ease !important;
+  pointer-events: none !important;
+}
+.logo-corner:hover {
+  transform: scale(1.03) !important;
+}
+@media (max-width: 480px) {
+  .logo-corner {
+    height: 44px !important;
+    max-width: 110px !important;
+    top: 10px !important;
+    left: 10px !important;
+  }
+}
+
 /* Frame container — giữ đúng tỷ lệ PNG, không méo */
 .auth-wrap.auth-frame {
   position: relative !important;
