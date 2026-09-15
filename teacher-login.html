@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Đăng nhập học sinh — Thầy Gia Huy</title>
-<meta name="description" content="Đăng nhập học sinh">
+<title>Đăng nhập giáo viên — Thầy Gia Huy</title>
+<meta name="description" content="Đăng nhập giáo viên">
 <link rel="icon" href="assets/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,27 +16,21 @@
 <body class="auth-page">
   <div class="auth-bg-layer" aria-hidden="true"></div>
 
-  <!-- Corner admin icon -->
   <a class="admin-corner" href="admin-login.html" title="Đăng nhập quản trị viên">
     <span class="admin-corner-ico">⚙</span>
   </a>
 
-  <div class="auth-wrap auth-frame">
+  <div class="auth-wrap auth-frame auth-frame-teacher">
     <div class="auth-card">
-      <div class="auth-tabs" role="tablist">
-        <button type="button" class="auth-tab active" data-tab="student" role="tab" aria-selected="true">Học sinh</button>
-        <a class="auth-tab" href="teacher-login.html" style="text-decoration:none;text-align:center;display:flex;align-items:center;justify-content:center">Giáo viên</a>
-      </div>
-
       <div class="auth-panels">
-        <form class="auth-panel active" id="studentForm" data-panel="student" autocomplete="on">
+        <form class="auth-panel active" id="teacherForm" autocomplete="on">
           <label class="auth-field">
             <span>Tên đăng nhập</span>
-            <input type="text" id="stuUser" placeholder="Tên đăng nhập" required maxlength="40">
+            <input type="text" id="teaUser" placeholder="Tên đăng nhập giáo viên" required maxlength="40">
           </label>
           <label class="auth-field">
             <span>Mã mời</span>
-            <input type="text" id="stuInvite" placeholder="Mã mời của học sinh" required maxlength="40">
+            <input type="text" id="teaInvite" placeholder="Mã mời của giáo viên" required maxlength="40">
           </label>
           <button type="submit" class="auth-submit">Đăng nhập</button>
         </form>
@@ -56,15 +50,15 @@
       }
     })();
 
-    document.getElementById('studentForm').addEventListener('submit', e => {
+    document.getElementById('teacherForm').addEventListener('submit', e => {
       e.preventDefault();
-      const r = Auth.loginStudent(
-        document.getElementById('stuUser').value,
-        document.getElementById('stuInvite').value
+      const r = Auth.loginTeacher(
+        document.getElementById('teaUser').value,
+        document.getElementById('teaInvite').value
       );
       if (!r.ok) return Auth.toast(r.msg, true);
-      Auth.toast('Đăng nhập học sinh thành công');
-      setTimeout(() => location.href = 'index.html', 400);
+      Auth.toast('Đăng nhập giáo viên thành công');
+      setTimeout(() => location.href = 'teacher.html', 400);
     });
   </script>
 </body>

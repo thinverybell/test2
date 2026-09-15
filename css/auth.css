@@ -507,6 +507,11 @@
   image-rendering: auto !important;
 }
 
+/* Khung riêng cho giáo viên / quản trị */
+.auth-wrap.auth-frame.auth-frame-teacher::before {
+  background: url('../assets/login-frame-teacher.png') center center / 100% 100% no-repeat !important;
+}
+
 /* Form card — absolute inset đúng vùng trắng, form nhỏ hơn để lộ khung ảnh */
 .auth-wrap.auth-frame .auth-card {
   position: absolute !important;
