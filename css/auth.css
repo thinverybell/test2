@@ -555,10 +555,13 @@
   flex-direction: column !important;
 }
 .auth-wrap.auth-frame .auth-panel {
+  display: none !important;
   flex: 0 0 auto !important;
   gap: 6px !important;
-  display: flex !important;
   flex-direction: column !important;
+}
+.auth-wrap.auth-frame .auth-panel.active {
+  display: flex !important;
 }
 .auth-wrap.auth-frame .auth-tab {
   font-size: 9.5px !important;
