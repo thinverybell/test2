@@ -507,9 +507,14 @@
   image-rendering: auto !important;
 }
 
-/* Khung riêng cho giáo viên / quản trị */
+/* Khung riêng cho giáo viên */
 .auth-wrap.auth-frame.auth-frame-teacher::before {
   background: url('../assets/login-frame-teacher.png') center center / 100% 100% no-repeat !important;
+}
+
+/* Khung riêng cho quản trị */
+.auth-wrap.auth-frame.auth-frame-admin::before {
+  background: url('../assets/login-frame-admin.png') center center / 100% 100% no-repeat !important;
 }
 
 /* Form card — absolute inset đúng vùng trắng, form nhỏ hơn để lộ khung ảnh */
