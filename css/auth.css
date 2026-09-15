@@ -474,14 +474,14 @@
 /* Logo góc trái trên */
 .logo-corner {
   position: fixed !important;
-  top: 12px !important;
-  left: 12px !important;
+  top: 10px !important;
+  left: 10px !important;
   z-index: 20 !important;
   width: auto !important;
-  height: 56px !important;
-  max-width: 140px !important;
+  height: 90px !important;
+  max-width: 220px !important;
   object-fit: contain !important;
-  filter: drop-shadow(0 4px 12px rgba(15, 39, 68, 0.2)) !important;
+  filter: drop-shadow(0 4px 14px rgba(15, 39, 68, 0.25)) !important;
   transition: 0.2s ease !important;
   pointer-events: none !important;
 }
@@ -490,10 +490,10 @@
 }
 @media (max-width: 480px) {
   .logo-corner {
-    height: 44px !important;
-    max-width: 110px !important;
-    top: 10px !important;
-    left: 10px !important;
+    height: 64px !important;
+    max-width: 160px !important;
+    top: 8px !important;
+    left: 8px !important;
   }
 }
 
